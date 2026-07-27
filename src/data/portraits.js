@@ -3,6 +3,9 @@
 // Fallback source: the community genshin.jmp.blue API. Then the element crest (in <Portrait>).
 const WIKI_BASE = "https://genshin-impact.fandom.com/wiki/Special:FilePath/";
 const PORTRAIT_BASE = "https://genshin.jmp.blue/characters";
+// genshin.gg's portrait CDN. Every character resolves to <base>/<display name>.png
+// (verified across the whole roster), so the URL is derived, not stored.
+const GG_PORTRAIT = "https://sunderarmor.com/GENSHIN/Characters/1/";
 
 // Characters whose wiki page title differs from the roster display name.
 // (Roster now uses genshin.gg names, so most resolve directly; Childe's wiki
@@ -40,6 +43,9 @@ const slugify = (name) => name.toLowerCase().replace(/['.]/g, "").replace(/\s+/g
 // finally showing the element crest if none resolve.
 export function portraitCandidates(c) {
   const out = [];
+  // genshin.gg CDN portrait, derived from the name; tried first, falls through on
+  // error (e.g. characters genshin.gg doesn't list, or custom user additions).
+  out.push(GG_PORTRAIT + encodeURIComponent(`${c.name}.png`));
   const wiki = Object.prototype.hasOwnProperty.call(WIKI_NAME, c.name) ? WIKI_NAME[c.name] : c.name;
   // "<name> Icon.png" is the square face avatar — the right shape for the 78px
   // card slot. (The old "Character <name> Card.png" never resolved and silently

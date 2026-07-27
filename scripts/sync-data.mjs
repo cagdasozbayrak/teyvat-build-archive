@@ -39,7 +39,8 @@ function decode(s) {
 
 // Parse the homepage character grid: each entry is an anchor to /characters/<slug>/
 // holding the rarity (rarity-N class), the element (character-type img alt), and the
-// display name (h2.character-name).
+// display name (h2.character-name). The portrait URL is derived from the name in
+// portraitCandidates (a fixed CDN pattern), so it isn't scraped here.
 function parseCharacters(html) {
   const re =
     /<a href="\/characters\/([a-z0-9-]+)\/"[^>]*class="character-portrait"[^>]*>\s*<img[^>]*class="character-icon rarity-(\d)"[^>]*>\s*<img alt="([^"]*)"[^>]*class="character-type"[^>]*>\s*<h2 class="character-name">([^<]*)<\/h2>/g;
@@ -82,26 +83,48 @@ async function main() {
   }
 
   const { ROSTER } = await import(new URL("../src/data/roster.js", import.meta.url));
-  const existing = ROSTER.map((c) => [c.name, c.element, c.weapon, c.rarity, c.region]);
-  const byName = new Map(existing.map((t) => [t[0].toLowerCase(), t]));
+  // Existing tuples keyed by name; weapon (index 2) and region (index 4) are
+  // manually maintained and preserved, everything else is refreshed from the scrape.
+  const existing = new Map(
+    ROSTER.map((c) => [c.name.toLowerCase(), [c.name, c.element, c.weapon, c.rarity, c.region]])
+  );
 
+  const result = new Map();
   const added = [];
   for (const c of scraped) {
-    if (byName.has(c.name.toLowerCase())) continue; // union-merge: keep existing tuple
-    // New character: fetch its page only for the weapon type.
-    let weapon = null;
-    try {
-      weapon = parseWeapon(await getHTML(`${SITE}/characters/${c.slug}/`));
-    } catch (e) {
-      console.warn(`could not fetch page for ${c.slug}: ${e.message}`);
+    const key = c.name.toLowerCase();
+    const e = existing.get(key);
+    let weapon, region;
+    if (e) {
+      weapon = e[2]; // keep manually-set weapon
+      region = e[4]; // keep manually-set region
+    } else {
+      // New character: fetch its page only for the weapon type; region has no clean field.
+      let w = null;
+      try {
+        w = parseWeapon(await getHTML(`${SITE}/characters/${c.slug}/`));
+      } catch (err) {
+        console.warn(`could not fetch page for ${c.slug}: ${err.message}`);
+      }
+      weapon = w || "Sword";
+      region = "—";
+      added.push(
+        `${c.name} (${c.element} ${c.rarity}★, ${w || "Sword?"}${w ? "" : " — weapon GUESSED"}, region "—" — set both manually)`
+      );
     }
-    byName.set(c.name.toLowerCase(), [c.name, c.element, weapon || "Sword", c.rarity, "—"]);
-    added.push(
-      `${c.name} (${c.element} ${c.rarity}★, ${weapon || "Sword?"}${weapon ? "" : " — weapon GUESSED"}, region "—" — set both manually)`
-    );
+    result.set(key, [c.name, c.element, weapon, c.rarity, region]);
   }
 
-  const all = [...byName.values()];
+  // Keep characters genshin.gg doesn't list (union-merge: never delete).
+  const kept = [];
+  for (const [key, e] of existing) {
+    if (!result.has(key)) {
+      result.set(key, e);
+      kept.push(e[0]);
+    }
+  }
+
+  const all = [...result.values()];
   const line = (t) =>
     `  [${JSON.stringify(t[0])}, ${JSON.stringify(t[1])}, ${JSON.stringify(t[2])}, ${t[3]}, ${JSON.stringify(t[4])}],`;
   const fives = all.filter((t) => t[3] === 5).sort((a, b) => a[0].localeCompare(b[0]));
@@ -141,12 +164,10 @@ async function main() {
   await writeFile(TRACKING_FILE, tsrc);
   await promisify(execFile)("npx", ["prettier", "--write", ROSTER_FILE, TRACKING_FILE]);
 
-  const scrapedNames = new Set(scraped.map((c) => c.name.toLowerCase()));
-  const keptChars = existing.map((t) => t[0]).filter((n) => !scrapedNames.has(n.toLowerCase()));
   console.log(`characters: +${added.length}`);
   added.forEach((a) => console.log(`  new: ${a}`));
   console.log(`sets: +${addedSets.length}${addedSets.length ? ` (${addedSets.join(", ")})` : ""}`);
-  console.log(`kept ${keptChars.length} not on genshin.gg: ${keptChars.join(", ") || "none"}`);
+  console.log(`kept ${kept.length} not on genshin.gg: ${kept.join(", ") || "none"}`);
 }
 
 main().catch((e) => {
