@@ -50,9 +50,13 @@ export function normalizeProgress(p) {
 
   STATS.forEach((s) => {
     const v = p.stats ? p.stats[s.key] : null;
+    // Coerce first so numeric strings from older/hand-edited saves survive
+    // instead of being silently reset to 0 / the default.
+    const cur = v ? Number(v.cur) : NaN;
+    const target = v ? Number(v.target) : NaN;
     np.stats[s.key] = {
-      cur: v && Number.isFinite(v.cur) ? v.cur : 0,
-      target: v && Number.isFinite(v.target) ? v.target : s.def,
+      cur: Number.isFinite(cur) ? cur : 0,
+      target: Number.isFinite(target) ? target : s.def,
     };
   });
 
