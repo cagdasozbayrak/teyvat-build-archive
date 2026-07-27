@@ -4,6 +4,14 @@ A Genshin Impact character build tracker — track talents (level + target), art
 (complete / upgrade needed, set name, reshape flag), and build stats (current vs target)
 for every character you're building.
 
+## Using it
+
+The app runs entirely in your browser — no account, no install. Open the hosted link,
+click **Add**, pick your characters, and track their talents, artifacts, and stats.
+
+Your data is saved **in this browser on this device only**. There's no cross-device sync,
+and clearing the browser's site data will wipe your tracking (no export yet).
+
 ## Requirements
 
 - [Node.js](https://nodejs.org) 18 or newer (includes `npm`).
