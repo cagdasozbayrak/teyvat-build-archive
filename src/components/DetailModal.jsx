@@ -5,7 +5,6 @@ import { TALENTS, ARTIFACTS, STATS, ARTIFACT_SETS } from "../data/tracking.js";
 import { TALENT_MAX } from "../lib/constants.js";
 import { talentDone, statMet } from "../lib/progress.js";
 import { portraitCandidates } from "../data/portraits.js";
-import Stars from "./Stars.jsx";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
 import ElementIcon from "./ElementIcon.jsx";
@@ -46,7 +45,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
             />
           </div>
           <div className="detail-title">
-            <Stars n={character.rarity} />
             <h2>{character.name}</h2>
             <div className="card-meta">
               <span className="el-tag" style={{ color: el }}>

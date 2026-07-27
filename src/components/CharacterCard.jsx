@@ -1,7 +1,6 @@
 import { ELEMENTS } from "../data/elements.js";
 import { portraitCandidates } from "../data/portraits.js";
 import { countDone } from "../lib/progress.js";
-import Stars from "./Stars.jsx";
 import Ring from "./Ring.jsx";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
@@ -23,7 +22,6 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
     >
       <div className="card-aura" />
       <div className="card-top">
-        <Stars n={character.rarity} />
         <Ring done={done} element={el.color} />
       </div>
       <div className="card-portrait">

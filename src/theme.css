@@ -226,14 +226,9 @@
 }
 .card-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-start;
   position: relative;
-}
-.stars {
-  color: var(--gold);
-  font-size: 12px;
-  letter-spacing: 1px;
 }
 .card-portrait {
   height: 72px;
@@ -382,13 +377,19 @@
   color: var(--ink);
   border-color: #3a4459;
 }
+/* Detail close button pinned to the top-right corner of the sheet. */
+.detail-head .x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
 
 /* detail */
 .detail-head {
   display: flex;
   gap: 16px;
   align-items: center;
-  padding: 22px 22px 18px;
+  padding: 22px 58px 18px 22px;
   border-bottom: 1px solid var(--line);
   position: relative;
   background: radial-gradient(500px 120px at 20% 0%, var(--el-soft), transparent 70%);
@@ -413,9 +414,6 @@
   font-family: "Cinzel", serif;
   margin: 3px 0 5px;
   font-size: 26px;
-}
-.detail-title .stars {
-  font-size: 13px;
 }
 .detail-body {
   padding: 20px 22px;
