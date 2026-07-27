@@ -843,12 +843,23 @@
   border-color: var(--el);
   transform: translateY(-2px);
 }
-.pick-glyph {
-  font-family: "Cinzel", serif;
-  font-size: 26px;
-  font-weight: 700;
-  display: block;
-  line-height: 1;
+.pick-portrait {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.pick-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pick-portrait .portrait-glyph {
+  font-size: 22px;
 }
 .pick-name {
   font-family: "Cinzel", serif;

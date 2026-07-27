@@ -1,7 +1,9 @@
 import { useState, useMemo } from "react";
 import { ELEMENTS, ELEMENT_LIST, WEAPON_LIST } from "../data/elements.js";
+import { portraitCandidates } from "../data/portraits.js";
 import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import WeaponIcon from "./WeaponIcon.jsx";
+import Portrait from "./Portrait.jsx";
 
 export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose }) {
   const dismiss = useModalDismiss(onClose);
@@ -92,8 +94,12 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
                   onClick={() => onAdd(c.id)}
                   style={{ "--el": ELEMENTS[c.element].color }}
                 >
-                  <span className="pick-glyph" style={{ color: ELEMENTS[c.element].color }}>
-                    {c.name.slice(0, 1)}
+                  <span className="pick-portrait">
+                    <Portrait
+                      srcs={portraitCandidates(c)}
+                      name={c.name}
+                      color={ELEMENTS[c.element].color}
+                    />
                   </span>
                   <span className="pick-name">{c.name}</span>
                   <span className="pick-meta">
