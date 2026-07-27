@@ -1,0 +1,49 @@
+// The three talents every character levels.
+export const TALENTS = [
+  { key: "na", label: "Normal Attack" },
+  { key: "skill", label: "Elemental Skill" },
+  { key: "burst", label: "Elemental Burst" },
+];
+
+// The five artifact slots.
+export const ARTIFACTS = [
+  { key: "flower", label: "Flower of Life" },
+  { key: "plume", label: "Plume of Death" },
+  { key: "sands", label: "Sands of Eon" },
+  { key: "goblet", label: "Goblet of Eonothem" },
+  { key: "circlet", label: "Circlet of Logos" },
+];
+
+// Common build stats. `def` seeds a sensible target; flat stats start untracked (target 0).
+export const STATS = [
+  { key: "critRate", label: "CRIT Rate", unit: "%", def: 70 },
+  { key: "critDmg", label: "CRIT DMG", unit: "%", def: 140 },
+  { key: "er", label: "Energy Recharge", unit: "%", def: 120 },
+  { key: "em", label: "Elemental Mastery", unit: "", def: 0 },
+  { key: "atk", label: "ATK", unit: "", def: 0 },
+  { key: "hp", label: "HP", unit: "", def: 0 },
+  { key: "def", label: "DEF", unit: "", def: 0 },
+  { key: "dmgBonus", label: "DMG Bonus", unit: "%", def: 0 },
+  { key: "healing", label: "Healing Bonus", unit: "%", def: 0 },
+];
+
+// All farmable artifact sets (current through v6.7). Powers the set-name autocomplete;
+// free text is still allowed for brand-new sets not listed here.
+export const ARTIFACT_SETS = [
+  "Adventurer", "Archaic Petra", "Aubade of Morningstar and Moon", "Berserker", "Blizzard Strayer",
+  "Bloodstained Chivalry", "Brave Heart", "Crimson Witch of Flames", "Deepwood Memories", "Defender's Will",
+  "Desert Pavilion Chronicle", "Echoes of an Offering", "Emblem of Severed Fate", "Finale of the Deep Galleries",
+  "Flower of Paradise Lost", "Fragment of Harmonic Whimsy", "Gambler", "Gilded Dreams", "Gladiator's Finale",
+  "Golden Troupe", "Heart of Depth", "Husk of Opulent Dreams", "Instructor", "Lavawalker", "Long Night's Oath",
+  "Lucky Dog", "Maiden Beloved", "Marechaussee Hunter", "Martial Artist", "Night of the Sky's Unveiling",
+  "Nighttime Whispers in the Echoing Woods", "Noblesse Oblige", "Nymph's Dream", "Obsidian Codex",
+  "Ocean-Hued Clam", "Pale Flame", "Prayers for Destiny", "Prayers for Illumination", "Prayers for Wisdom",
+  "Prayers to Springtime", "Resolution of Sojourner", "Retracing Bolide", "Scholar",
+  "Scroll of the Hero of Cinder City", "Shimenawa's Reminiscence", "Silken Moon's Serenade", "Song of Days Past",
+  "Tenacity of the Millelith", "The Exile", "Thundering Fury", "Thundersoother", "Tiny Miracle",
+  "Traveling Doctor", "Unfinished Reverie", "Vermillion Hereafter", "Viridescent Venerer", "Vourukasha's Glow",
+  "Wanderer's Troupe",
+];
+
+// Total trackable items per character (3 talents + 5 artifacts) — the card ring denominator.
+export const ITEMS_PER_CHAR = TALENTS.length + ARTIFACTS.length;
