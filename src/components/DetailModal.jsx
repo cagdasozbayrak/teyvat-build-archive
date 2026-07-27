@@ -196,27 +196,19 @@ export default function DetailModal({ character, progress, actions, onRemove, on
                   >
                     <span className="stat-name">{s.label}</span>
                     <div className="stat-fields">
-                      <input
+                      <StatField
                         className="stat-input"
-                        type="number"
-                        min="0"
-                        inputMode="decimal"
-                        value={v.cur || ""}
+                        value={v.cur}
                         placeholder="0"
-                        onChange={(e) => actions.setStat(id, s.key, "cur", e.target.value)}
-                        onBlur={actions.commitField}
+                        onCommit={(val) => actions.commitStat(id, s.key, "cur", val)}
                       />
                       <span className="stat-unit">{s.unit}</span>
                       <span className="stat-arrow">{"\u2192"}</span>
-                      <input
+                      <StatField
                         className="stat-input target"
-                        type="number"
-                        min="0"
-                        inputMode="decimal"
-                        value={v.target || ""}
+                        value={v.target}
                         placeholder="—"
-                        onChange={(e) => actions.setStat(id, s.key, "target", e.target.value)}
-                        onBlur={actions.commitField}
+                        onCommit={(val) => actions.commitStat(id, s.key, "target", val)}
                       />
                       <span className="stat-unit">{s.unit}</span>
                       <span className="stat-dot" aria-hidden>
@@ -258,5 +250,26 @@ export default function DetailModal({ character, progress, actions, onRemove, on
         </div>
       </div>
     </div>
+  );
+}
+
+// A numeric field that keeps the raw typed string while focused (so partial
+// values like "77." are preserved) and coerces to a number only on blur.
+function StatField({ className, value, placeholder, onCommit }) {
+  const [buf, setBuf] = useState(null);
+  const shown = buf ?? (value || "");
+  return (
+    <input
+      className={className}
+      type="text"
+      inputMode="decimal"
+      value={shown}
+      placeholder={placeholder}
+      onChange={(e) => setBuf(e.target.value.replace(/[^\d.]/g, ""))}
+      onBlur={() => {
+        if (buf !== null) onCommit(buf);
+        setBuf(null);
+      }}
+    />
   );
 }

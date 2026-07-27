@@ -154,13 +154,16 @@ export function useTracker() {
     });
   };
 
-  const setStat = (id, key, field, val) => {
+  // Stats commit on blur with the raw input string, coerced here. Coercing per
+  // keystroke (with a number input) makes decimals like "77.5" impossible to type,
+  // so the field keeps a raw buffer and calls this once, persisting atomically.
+  const commitStat = (id, key, field, val) => {
     const p = owned[id];
-    const num = val === "" ? 0 : Math.max(0, Number(val) || 0);
-    setOwned({
-      ...owned,
-      [id]: { ...p, stats: { ...p.stats, [key]: { ...p.stats[key], [field]: num } } },
-    });
+    const num = String(val).trim() === "" ? 0 : Math.max(0, Number(val) || 0);
+    update(
+      { ...owned, [id]: { ...p, stats: { ...p.stats, [key]: { ...p.stats[key], [field]: num } } } },
+      null
+    );
   };
 
   const setImg = (id, val) => {
@@ -183,7 +186,7 @@ export function useTracker() {
     toggleReshape,
     setAllArtifactSets,
     setArtifactSet,
-    setStat,
+    commitStat,
     setImg,
     commitField,
   };

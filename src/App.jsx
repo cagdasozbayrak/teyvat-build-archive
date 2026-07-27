@@ -97,7 +97,7 @@ export default function App() {
             setArtifactSet: t.setArtifactSet,
             setAllArtifactSets: t.setAllArtifactSets,
             toggleReshape: t.toggleReshape,
-            setStat: t.setStat,
+            commitStat: t.commitStat,
             setImg: t.setImg,
             commitField: t.commitField,
           }}
