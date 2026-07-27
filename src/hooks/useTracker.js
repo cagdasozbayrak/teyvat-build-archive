@@ -8,8 +8,8 @@ import { blankProgress, normalizeProgress } from "../lib/progress.js";
 // Owns the persisted tracker state (owned characters + custom roster additions)
 // and every mutation. UI-only state (search, filters, open modals) lives in App.
 export function useTracker() {
-  const [owned, setOwned] = useState({});   // { charId: progress }
-  const [custom, setCustom] = useState([]);  // extra roster entries the user created
+  const [owned, setOwned] = useState({}); // { charId: progress }
+  const [custom, setCustom] = useState([]); // extra roster entries the user created
   const [loading, setLoading] = useState(true);
   const [saveNote, setSaveNote] = useState("");
 
@@ -24,7 +24,9 @@ export function useTracker() {
         if (res && res.value) {
           const d = JSON.parse(res.value);
           const o = {};
-          Object.keys(d.owned || {}).forEach((id) => { o[id] = normalizeProgress(d.owned[id]); });
+          Object.keys(d.owned || {}).forEach((id) => {
+            o[id] = normalizeProgress(d.owned[id]);
+          });
           setOwned(o);
           setCustom(d.custom || []);
         }
@@ -46,13 +48,16 @@ export function useTracker() {
   }, []);
 
   // Apply a state change and persist it. Pass null to leave owned/custom untouched.
-  const update = useCallback((nextOwned, nextCustom) => {
-    const o = nextOwned ?? owned;
-    const c = nextCustom ?? custom;
-    if (nextOwned) setOwned(nextOwned);
-    if (nextCustom) setCustom(nextCustom);
-    persist(o, c);
-  }, [owned, custom, persist]);
+  const update = useCallback(
+    (nextOwned, nextCustom) => {
+      const o = nextOwned ?? owned;
+      const c = nextCustom ?? custom;
+      if (nextOwned) setOwned(nextOwned);
+      if (nextCustom) setCustom(nextCustom);
+      persist(o, c);
+    },
+    [owned, custom, persist]
+  );
 
   // Persist the current in-memory state (used by fields that update instantly
   // while typing and commit on blur).
@@ -85,33 +90,53 @@ export function useTracker() {
   const toggleArtifact = (id, key) => {
     const p = owned[id];
     const status = p.artifacts[key].status === "complete" ? "upgrade" : "complete";
-    update({ ...owned, [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...p.artifacts[key], status } } } }, null);
+    update(
+      {
+        ...owned,
+        [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...p.artifacts[key], status } } },
+      },
+      null
+    );
   };
 
   const toggleReshape = (id, key) => {
     const p = owned[id];
     const cur = p.artifacts[key];
-    update({ ...owned, [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...cur, reshape: !cur.reshape } } } }, null);
+    update(
+      {
+        ...owned,
+        [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...cur, reshape: !cur.reshape } } },
+      },
+      null
+    );
   };
 
   const setAllArtifactSets = (id, val) => {
     if (!val.trim()) return;
     const p = owned[id];
     const artifacts = {};
-    ARTIFACTS.forEach((s) => { artifacts[s.key] = { ...p.artifacts[s.key], set: val }; });
+    ARTIFACTS.forEach((s) => {
+      artifacts[s.key] = { ...p.artifacts[s.key], set: val };
+    });
     update({ ...owned, [id]: { ...p, artifacts } }, null);
   };
 
   // Instant-update fields (persist on blur via commitField).
   const setArtifactSet = (id, key, val) => {
     const p = owned[id];
-    setOwned({ ...owned, [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...p.artifacts[key], set: val } } } });
+    setOwned({
+      ...owned,
+      [id]: { ...p, artifacts: { ...p.artifacts, [key]: { ...p.artifacts[key], set: val } } },
+    });
   };
 
   const setStat = (id, key, field, val) => {
     const p = owned[id];
     const num = val === "" ? 0 : Math.max(0, Number(val) || 0);
-    setOwned({ ...owned, [id]: { ...p, stats: { ...p.stats, [key]: { ...p.stats[key], [field]: num } } } });
+    setOwned({
+      ...owned,
+      [id]: { ...p, stats: { ...p.stats, [key]: { ...p.stats[key], [field]: num } } },
+    });
   };
 
   const setImg = (id, val) => {
@@ -120,9 +145,22 @@ export function useTracker() {
   };
 
   return {
-    owned, custom, loading, saveNote, allRoster, byId,
-    addChar, removeChar, addCustom,
-    setTalent, toggleArtifact, toggleReshape, setAllArtifactSets, setArtifactSet,
-    setStat, setImg, commitField,
+    owned,
+    custom,
+    loading,
+    saveNote,
+    allRoster,
+    byId,
+    addChar,
+    removeChar,
+    addCustom,
+    setTalent,
+    toggleArtifact,
+    toggleReshape,
+    setAllArtifactSets,
+    setArtifactSet,
+    setStat,
+    setImg,
+    commitField,
   };
 }

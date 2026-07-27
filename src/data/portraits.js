@@ -6,18 +6,32 @@ const PORTRAIT_BASE = "https://genshin.jmp.blue/characters";
 
 // Characters whose wiki page title differs from the short display name used in the roster.
 const WIKI_NAME = {
-  "Ayaka": "Kamisato Ayaka", "Ayato": "Kamisato Ayato", "Raiden": "Raiden Shogun",
-  "Itto": "Arataki Itto", "Kazuha": "Kaedehara Kazuha", "Heizou": "Shikanoin Heizou",
-  "Sara": "Kujou Sara", "Shinobu": "Kuki Shinobu", "Kokomi": "Sangonomiya Kokomi",
-  "Mizuki": "Yumemizuki Mizuki", "Traveler": null, // Traveler has split art; use crest
+  Ayaka: "Kamisato Ayaka",
+  Ayato: "Kamisato Ayato",
+  Raiden: "Raiden Shogun",
+  Itto: "Arataki Itto",
+  Kazuha: "Kaedehara Kazuha",
+  Heizou: "Shikanoin Heizou",
+  Sara: "Kujou Sara",
+  Shinobu: "Kuki Shinobu",
+  Kokomi: "Sangonomiya Kokomi",
+  Mizuki: "Yumemizuki Mizuki",
+  Traveler: null, // Traveler has split art; use crest
 };
 
 // Characters whose jmp.blue API slug differs from the slugified display name.
 const SLUG_OVERRIDE = {
-  "Ayaka": "kamisato-ayaka", "Ayato": "kamisato-ayato", "Raiden": "raiden-shogun",
-  "Itto": "arataki-itto", "Kazuha": "kaedehara-kazuha", "Heizou": "shikanoin-heizou",
-  "Sara": "kujou-sara", "Shinobu": "kuki-shinobu", "Kokomi": "sangonomiya-kokomi",
-  "Mizuki": "yumemizuki-mizuki", "Traveler": "traveler-anemo",
+  Ayaka: "kamisato-ayaka",
+  Ayato: "kamisato-ayato",
+  Raiden: "raiden-shogun",
+  Itto: "arataki-itto",
+  Kazuha: "kaedehara-kazuha",
+  Heizou: "shikanoin-heizou",
+  Sara: "kujou-sara",
+  Shinobu: "kuki-shinobu",
+  Kokomi: "sangonomiya-kokomi",
+  Mizuki: "yumemizuki-mizuki",
+  Traveler: "traveler-anemo",
 };
 
 const slugify = (name) => name.toLowerCase().replace(/['.]/g, "").replace(/\s+/g, "-");

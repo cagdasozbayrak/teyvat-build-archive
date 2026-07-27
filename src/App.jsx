@@ -22,15 +22,17 @@ export default function App() {
   const [detailId, setDetailId] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
 
-  const ownedList = useMemo(() =>
-    Object.keys(owned)
-      .map((id) => byId[id])
-      .filter(Boolean)
-      .filter((c) => (elemFilter ? c.element === elemFilter : true))
-      .filter((c) => (hideDone ? countDone(owned[c.id]) < ITEMS_PER_CHAR : true))
-      .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
-      .sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name)),
-    [owned, byId, elemFilter, hideDone, search]);
+  const ownedList = useMemo(
+    () =>
+      Object.keys(owned)
+        .map((id) => byId[id])
+        .filter(Boolean)
+        .filter((c) => (elemFilter ? c.element === elemFilter : true))
+        .filter((c) => (hideDone ? countDone(owned[c.id]) < ITEMS_PER_CHAR : true))
+        .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+        .sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name)),
+    [owned, byId, elemFilter, hideDone, search]
+  );
 
   const stats = useMemo(() => {
     const ids = Object.keys(owned);
@@ -54,31 +56,49 @@ export default function App() {
       <Hero stats={stats} />
 
       <Toolbar
-        search={search} setSearch={setSearch}
-        elemFilter={elemFilter} setElemFilter={setElemFilter}
-        hideDone={hideDone} setHideDone={setHideDone}
+        search={search}
+        setSearch={setSearch}
+        elemFilter={elemFilter}
+        setElemFilter={setElemFilter}
+        hideDone={hideDone}
+        setHideDone={setHideDone}
         onAdd={() => setAddOpen(true)}
       />
 
       {saveNote && <div className="save-note">{saveNote}</div>}
 
       <CharacterGrid
-        loading={loading} list={ownedList} owned={owned} stats={stats} hideDone={hideDone}
-        onOpen={setDetailId} onRequestRemove={setConfirmId}
+        loading={loading}
+        list={ownedList}
+        owned={owned}
+        stats={stats}
+        hideDone={hideDone}
+        onOpen={setDetailId}
+        onRequestRemove={setConfirmId}
       />
 
       {addOpen && (
-        <AddModal roster={allRoster} owned={owned}
-          onAdd={t.addChar} onAddCustom={t.addCustom} onClose={() => setAddOpen(false)} />
+        <AddModal
+          roster={allRoster}
+          owned={owned}
+          onAdd={t.addChar}
+          onAddCustom={t.addCustom}
+          onClose={() => setAddOpen(false)}
+        />
       )}
 
       {detail && detailP && (
         <DetailModal
-          character={detail} progress={detailP}
+          character={detail}
+          progress={detailP}
           actions={{
-            setTalent: t.setTalent, toggleArtifact: t.toggleArtifact,
-            setArtifactSet: t.setArtifactSet, setAllArtifactSets: t.setAllArtifactSets,
-            toggleReshape: t.toggleReshape, setStat: t.setStat, setImg: t.setImg,
+            setTalent: t.setTalent,
+            toggleArtifact: t.toggleArtifact,
+            setArtifactSet: t.setArtifactSet,
+            setAllArtifactSets: t.setAllArtifactSets,
+            toggleReshape: t.toggleReshape,
+            setStat: t.setStat,
+            setImg: t.setImg,
             commitField: t.commitField,
           }}
           onRemove={() => setConfirmId(detail.id)}
@@ -87,8 +107,11 @@ export default function App() {
       )}
 
       {confirmId && byId[confirmId] && (
-        <ConfirmDialog name={byId[confirmId].name}
-          onCancel={() => setConfirmId(null)} onConfirm={confirmRemove} />
+        <ConfirmDialog
+          name={byId[confirmId].name}
+          onCancel={() => setConfirmId(null)}
+          onConfirm={confirmRemove}
+        />
       )}
     </div>
   );

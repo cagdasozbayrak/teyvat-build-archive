@@ -4,7 +4,10 @@ import { TALENT_MAX, DEFAULT_TARGET, clamp } from "./constants.js";
 // A fresh, empty progress record for a newly added character.
 export const blankProgress = () => ({
   talents: TALENTS.reduce((a, t) => ((a[t.key] = { lvl: 1, target: DEFAULT_TARGET }), a), {}),
-  artifacts: ARTIFACTS.reduce((a, s) => ((a[s.key] = { status: "upgrade", set: "", reshape: false }), a), {}),
+  artifacts: ARTIFACTS.reduce(
+    (a, s) => ((a[s.key] = { status: "upgrade", set: "", reshape: false }), a),
+    {}
+  ),
   stats: STATS.reduce((a, s) => ((a[s.key] = { cur: 0, target: s.def }), a), {}),
   img: "",
   addedAt: Date.now(),
@@ -14,7 +17,13 @@ export const blankProgress = () => ({
 // talent format ("complete" / "upgrade") from early versions of the app.
 export function normalizeProgress(p) {
   p = p || {};
-  const np = { img: p.img || "", addedAt: p.addedAt || Date.now(), talents: {}, artifacts: {}, stats: {} };
+  const np = {
+    img: p.img || "",
+    addedAt: p.addedAt || Date.now(),
+    talents: {},
+    artifacts: {},
+    stats: {},
+  };
 
   TALENTS.forEach((t) => {
     const v = p.talents ? p.talents[t.key] : null;
