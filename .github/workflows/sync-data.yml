@@ -1,0 +1,35 @@
+name: Sync game data
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  HUSKY: 0 # don't run the local pre-commit hook inside CI commits
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run sync:data
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/data-sync
+          delete-branch: true
+          commit-message: "chore: sync roster and artifact sets from genshin.gg"
+          title: "chore: sync roster and artifact sets from genshin.gg"
+          body: |
+            Automated weekly sync from genshin.gg (union-merge, no deletions).
+            Review the added characters/sets before merging — new characters get
+            region "—" (and a guessed weapon if the page parse missed it); fill
+            those in here.
