@@ -43,8 +43,9 @@ how to do common tasks (add a character, artifact set, or stat).
 
 ## Notes
 
-- **Saving:** when run locally, your data is stored in the browser via `localStorage`,
-  so it persists between sessions on the same browser. Clearing site data resets it.
+- **Saving:** on any standalone build (local or hosted), your data is stored in the
+  browser via `localStorage`, so it persists between sessions on the same browser and
+  device. There is no cross-device sync; clearing site data resets it.
 - **Portraits:** character art is loaded by name from the Genshin Fandom wiki at runtime
   (nothing is bundled). If a portrait doesn't resolve — e.g. a brand-new or custom
   character — you'll see the element crest instead, and you can paste any image URL in

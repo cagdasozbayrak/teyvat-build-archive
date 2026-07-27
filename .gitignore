@@ -5,3 +5,6 @@ dist
 .idea
 .vercel
 .mcp.json
+.env
+.env.*
+!.env.example
