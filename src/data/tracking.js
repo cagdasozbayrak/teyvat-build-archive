@@ -30,6 +30,7 @@ export const STATS = [
 // All farmable artifact sets (current through v6.7). Powers the set-name autocomplete;
 // free text is still allowed for brand-new sets not listed here.
 export const ARTIFACT_SETS = [
+  "A Day Carved From Rising Winds",
   "Adventurer",
   "Archaic Petra",
   "Aubade of Morningstar and Moon",
@@ -37,10 +38,12 @@ export const ARTIFACT_SETS = [
   "Blizzard Strayer",
   "Bloodstained Chivalry",
   "Brave Heart",
+  "Celestial Gift",
   "Crimson Witch of Flames",
   "Deepwood Memories",
   "Defender's Will",
   "Desert Pavilion Chronicle",
+  "Disenchantment in Deep Shadow",
   "Echoes of an Offering",
   "Emblem of Severed Fate",
   "Finale of the Deep Galleries",

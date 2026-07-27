@@ -4,7 +4,9 @@
 const WIKI_BASE = "https://genshin-impact.fandom.com/wiki/Special:FilePath/";
 const PORTRAIT_BASE = "https://genshin.jmp.blue/characters";
 
-// Characters whose wiki page title differs from the short display name used in the roster.
+// Characters whose wiki page title differs from the roster display name.
+// (Roster now uses genshin.gg names, so most resolve directly; Childe's wiki
+// page is "Tartaglia".)
 const WIKI_NAME = {
   Ayaka: "Kamisato Ayaka",
   Ayato: "Kamisato Ayato",
@@ -13,9 +15,8 @@ const WIKI_NAME = {
   Kazuha: "Kaedehara Kazuha",
   Heizou: "Shikanoin Heizou",
   Sara: "Kujou Sara",
-  Shinobu: "Kuki Shinobu",
   Kokomi: "Sangonomiya Kokomi",
-  Mizuki: "Yumemizuki Mizuki",
+  Childe: "Tartaglia",
   Traveler: null, // Traveler has split art; use crest
 };
 
@@ -28,9 +29,8 @@ const SLUG_OVERRIDE = {
   Kazuha: "kaedehara-kazuha",
   Heizou: "shikanoin-heizou",
   Sara: "kujou-sara",
-  Shinobu: "kuki-shinobu",
   Kokomi: "sangonomiya-kokomi",
-  Mizuki: "yumemizuki-mizuki",
+  Childe: "tartaglia",
   Traveler: "traveler-anemo",
 };
 
