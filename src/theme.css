@@ -224,12 +224,6 @@
   background: radial-gradient(circle, var(--el-soft), transparent 68%);
   pointer-events: none;
 }
-.card-top {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  position: relative;
-}
 .card-portrait {
   height: 72px;
   display: grid;
@@ -263,6 +257,39 @@
   gap: 12px;
   margin-top: 7px;
   flex-wrap: wrap;
+}
+.card-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.prog-track {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.prog-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--el);
+  transition: width 0.4s ease;
+}
+.prog-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  flex: none;
+}
+.card-progress.done .prog-fill {
+  background: var(--gold);
+}
+.card-progress.done .prog-label {
+  color: var(--gold);
 }
 .el-tag {
   display: inline-flex;
