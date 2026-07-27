@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
 import { ELEMENTS, ELEMENT_LIST, WEAPON_LIST } from "../data/elements.js";
+import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import WeaponIcon from "./WeaponIcon.jsx";
 
 export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose }) {
+  const dismiss = useModalDismiss(onClose);
   const [tab, setTab] = useState("pick");
   const [q, setQ] = useState("");
   const [ef, setEf] = useState(null);
@@ -26,8 +28,14 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
   const canSave = cn.trim().length > 0 && !nameTaken;
 
   return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet add" onClick={(e) => e.stopPropagation()}>
+    <div className="overlay" {...dismiss}>
+      <div
+        className="sheet add"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Add a character to your archive"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="add-head">
           <div className="tabs">
             <button className={tab === "pick" ? "on" : ""} onClick={() => setTab("pick")}>

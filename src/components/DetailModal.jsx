@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ELEMENTS } from "../data/elements.js";
+import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import { TALENTS, ARTIFACTS, STATS, ARTIFACT_SETS } from "../data/tracking.js";
 import { TALENT_MAX } from "../lib/constants.js";
 import { talentDone, statMet } from "../lib/progress.js";
@@ -15,19 +16,23 @@ export default function DetailModal({ character, progress, actions, onRemove, on
   const soft = ELEMENTS[character.element].soft;
   const id = character.id;
 
+  // Commit any in-progress field edit before closing (Escape or backdrop).
+  const close = useCallback(() => {
+    actions.commitField();
+    onClose();
+  }, [actions, onClose]);
+  const dismiss = useModalDismiss(close);
+
   const metCount = STATS.filter((s) => statMet(progress.stats[s.key])).length;
   const trackedCount = STATS.filter((s) => progress.stats[s.key].target > 0).length;
 
   return (
-    <div
-      className="overlay"
-      onClick={() => {
-        actions.commitField();
-        onClose();
-      }}
-    >
+    <div className="overlay" {...dismiss}>
       <div
         className="sheet detail"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${character.name} build details`}
         onClick={(e) => e.stopPropagation()}
         style={{ "--el": el, "--el-soft": soft }}
       >
@@ -54,14 +59,7 @@ export default function DetailModal({ character, progress, actions, onRemove, on
               {character.region !== "—" && <span className="region">{character.region}</span>}
             </div>
           </div>
-          <button
-            className="x"
-            onClick={() => {
-              actions.commitField();
-              onClose();
-            }}
-            aria-label="Close"
-          >
+          <button className="x" onClick={close} aria-label="Close">
             ✕
           </button>
         </div>

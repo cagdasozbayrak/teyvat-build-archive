@@ -1,7 +1,16 @@
+import { useModalDismiss } from "../hooks/useModalDismiss.js";
+
 export default function ConfirmDialog({ name, onCancel, onConfirm }) {
+  const dismiss = useModalDismiss(onCancel);
   return (
-    <div className="overlay" onClick={onCancel}>
-      <div className="sheet confirm" onClick={(e) => e.stopPropagation()}>
+    <div className="overlay" {...dismiss}>
+      <div
+        className="sheet confirm"
+        role="alertdialog"
+        aria-modal="true"
+        aria-label={`Remove ${name} from your archive?`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="confirm-q">
           Remove <b>{name}</b> from your archive?
         </p>
