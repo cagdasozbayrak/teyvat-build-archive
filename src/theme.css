@@ -276,6 +276,11 @@
   font-size: 12px;
   font-weight: 600;
 }
+.el-icon {
+  object-fit: contain;
+  vertical-align: middle;
+  flex: none;
+}
 .wpn {
   display: inline-flex;
   align-items: center;

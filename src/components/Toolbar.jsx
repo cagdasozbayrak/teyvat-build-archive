@@ -1,4 +1,5 @@
 import { ELEMENTS, ELEMENT_LIST } from "../data/elements.js";
+import ElementIcon from "./ElementIcon.jsx";
 
 export default function Toolbar({
   search,
@@ -32,7 +33,7 @@ export default function Toolbar({
             }
             onClick={() => setElemFilter(elemFilter === el ? null : el)}
           >
-            <span className="dot" style={{ background: ELEMENTS[el].color }} />
+            <ElementIcon element={el} size={14} />
             {el}
           </button>
         ))}

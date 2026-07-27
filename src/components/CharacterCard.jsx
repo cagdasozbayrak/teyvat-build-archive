@@ -5,6 +5,7 @@ import Stars from "./Stars.jsx";
 import Ring from "./Ring.jsx";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
+import ElementIcon from "./ElementIcon.jsx";
 
 export default function CharacterCard({ character, progress, onOpen, onRequestRemove }) {
   const el = ELEMENTS[character.element];
@@ -35,7 +36,7 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
       <div className="card-name">{character.name}</div>
       <div className="card-meta">
         <span className="el-tag" style={{ color: el.color }}>
-          <span className="dot" style={{ background: el.color }} />
+          <ElementIcon element={character.element} size={15} />
           {character.element}
         </span>
         <span className="wpn">

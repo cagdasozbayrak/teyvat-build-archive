@@ -8,6 +8,7 @@ import { portraitCandidates } from "../data/portraits.js";
 import Stars from "./Stars.jsx";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
+import ElementIcon from "./ElementIcon.jsx";
 import Stepper from "./Stepper.jsx";
 
 export default function DetailModal({ character, progress, actions, onRemove, onClose }) {
@@ -49,7 +50,7 @@ export default function DetailModal({ character, progress, actions, onRemove, on
             <h2>{character.name}</h2>
             <div className="card-meta">
               <span className="el-tag" style={{ color: el }}>
-                <span className="dot" style={{ background: el }} />
+                <ElementIcon element={character.element} size={16} />
                 {character.element}
               </span>
               <span className="wpn">

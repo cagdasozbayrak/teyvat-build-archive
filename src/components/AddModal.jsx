@@ -4,6 +4,7 @@ import { portraitCandidates } from "../data/portraits.js";
 import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import WeaponIcon from "./WeaponIcon.jsx";
 import Portrait from "./Portrait.jsx";
+import ElementIcon from "./ElementIcon.jsx";
 
 export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose }) {
   const dismiss = useModalDismiss(onClose);
@@ -77,7 +78,7 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
                     }
                     onClick={() => setEf(ef === el ? null : el)}
                   >
-                    <span className="dot" style={{ background: ELEMENTS[el].color }} />
+                    <ElementIcon element={el} size={14} />
                     {el}
                   </button>
                 ))}
@@ -103,7 +104,7 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
                   </span>
                   <span className="pick-name">{c.name}</span>
                   <span className="pick-meta">
-                    <span className="dot" style={{ background: ELEMENTS[c.element].color }} />
+                    <ElementIcon element={c.element} size={12} />
                     <WeaponIcon type={c.weapon} size={12} color="#8a93a6" />
                     <span className="pick-rare">{c.rarity}★</span>
                   </span>
@@ -144,7 +145,7 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
                     }
                     onClick={() => setCe(el)}
                   >
-                    <span className="dot" style={{ background: ELEMENTS[el].color }} />
+                    <ElementIcon element={el} size={14} />
                     {el}
                   </button>
                 ))}
