@@ -38,8 +38,9 @@ The contents of `dist/` are plain static files you can host anywhere.
 
 Source is organized under `src/` into `data/` (static game data), `lib/` (storage +
 progress logic), `hooks/` (state), and `components/` (UI), composed by `App.jsx`.
-Styles live in `src/theme.css`. See the module notes for architecture, conventions, and
-how to do common tasks (add a character, artifact set, or stat).
+Styles live in `src/theme.css`. Each module carries notes on its own conventions;
+common tasks (add a character, artifact set, or stat) are one-line data edits under
+`src/data/`.
 
 ## Notes
 
