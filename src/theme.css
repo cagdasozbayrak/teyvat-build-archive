@@ -265,6 +265,7 @@
   margin-top: 12px;
 }
 .prog-track {
+  position: relative;
   flex: 1;
   height: 5px;
   border-radius: 3px;
@@ -278,12 +279,29 @@
   background: var(--el);
   transition: width 0.4s ease;
 }
+/* The slice of the fill standing on pieces that are complete but flagged for
+   reshape — same length as those pieces, in a cooler tone so a card with work
+   still planned doesn't read as finished. */
+.prog-reshape {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: #5f7fb0;
+  transition:
+    width 0.4s ease,
+    left 0.4s ease;
+}
 .prog-label {
   font-size: 11px;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.03em;
   flex: none;
+}
+.prog-mark {
+  color: #7c9bcc;
+  font-weight: 700;
 }
 .card-progress.done .prog-fill {
   background: var(--gold);

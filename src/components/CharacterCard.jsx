@@ -1,5 +1,5 @@
 import { ELEMENTS } from "../data/elements.js";
-import { ITEMS_PER_CHAR } from "../data/tracking.js";
+import { ARTIFACTS, ITEMS_PER_CHAR } from "../data/tracking.js";
 import { portraitCandidates } from "../data/portraits.js";
 import { countDone } from "../lib/progress.js";
 import Portrait from "./Portrait.jsx";
@@ -11,6 +11,13 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
   const done = countDone(progress);
   const full = done === ITEMS_PER_CHAR;
   const pct = Math.round((done / ITEMS_PER_CHAR) * 100);
+  // Pieces flagged for reshape count as complete, so the bar would otherwise read as
+  // finished. Tint the tail of the fill that covers them instead.
+  const reshaping = ARTIFACTS.filter((s) => progress.artifacts[s.key].reshape).length;
+  const shaped = ARTIFACTS.filter(
+    (s) => progress.artifacts[s.key].reshape && progress.artifacts[s.key].status === "complete"
+  ).length;
+  const shapedPct = (shaped / ITEMS_PER_CHAR) * 100;
   return (
     <button
       className="card"
@@ -44,9 +51,21 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
       <div className={"card-progress" + (full ? " done" : "")}>
         <span className="prog-track">
           <span className="prog-fill" style={{ width: `${pct}%` }} />
+          {shaped > 0 && (
+            <span
+              className="prog-reshape"
+              style={{ width: `${shapedPct}%`, left: `${pct - shapedPct}%` }}
+            />
+          )}
         </span>
         <span className="prog-label">
           {done}/{ITEMS_PER_CHAR}
+          {reshaping > 0 && (
+            <span className="prog-mark">
+              {" ↻"}
+              {reshaping}
+            </span>
+          )}
         </span>
       </div>
     </button>
