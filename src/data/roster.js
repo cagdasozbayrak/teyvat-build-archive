@@ -49,6 +49,7 @@ const RAW = [
   ["Neuvillette", "Hydro", "Catalyst", 5, "Fontaine"],
   ["Nicole", "Pyro", "Catalyst", 5, "Nod-Krai"],
   ["Nilou", "Hydro", "Sword", 5, "Sumeru"],
+  ["Odette", "Cryo", "Sword", 5, "—"],
   ["Qiqi", "Cryo", "Sword", 5, "Liyue"],
   ["Raiden", "Electro", "Polearm", 5, "Inazuma"],
   ["Sandrone", "Cryo", "Claymore", 5, "Snezhnaya"],
@@ -73,6 +74,7 @@ const RAW = [
   ["Zibai", "Geo", "Sword", 5, "Liyue"],
   // 4-star
   ["Aino", "Hydro", "Claymore", 4, "Nod-Krai"],
+  ["Alyosha", "Electro", "Polearm", 4, "—"],
   ["Amber", "Pyro", "Bow", 4, "Mondstadt"],
   ["Barbara", "Hydro", "Catalyst", 4, "Mondstadt"],
   ["Beidou", "Electro", "Claymore", 4, "Liyue"],
