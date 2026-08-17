@@ -43,8 +43,7 @@ function decode(s) {
 // portraitCandidates (a fixed CDN pattern), so it isn't scraped here.
 function parseCharacters(html) {
   const re =
-    /<a href="\/characters\/([a-z0-9-]+)\/"[^>]*class="character-portrait"[^>]*>\s*<img[^>]*class="character-icon rarity-(\d)"[^>]*>\s*<img alt="([^"]*)"[^>]*class="character-type"[^>]*>\s*<h2 class="character-name">([^<]*)<\/h2>/g;
-  const out = [];
+    /<a href="\/characters\/([a-z0-9-]+)\/"[^>]*class="character-portrait(?: character-new)?"[^>]*>\s*<img[^>]*class="character-icon rarity-(\d)"[^>]*>\s*<img alt="([^"]*)"[^>]*class="character-type"[^>]*>\s*<h2 class="character-name">([^<]*)<\/h2>/g;  const out = [];
   let m;
   while ((m = re.exec(html))) {
     const [, slug, rarity, element, name] = m;
