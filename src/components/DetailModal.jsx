@@ -5,6 +5,7 @@ import { TALENTS, ARTIFACTS, STATS, ARTIFACT_SETS } from "../data/tracking.js";
 import { TALENT_MAX } from "../lib/constants.js";
 import { talentDone, statMet } from "../lib/progress.js";
 import { portraitCandidates } from "../data/portraits.js";
+import { buildPageUrl } from "../data/builds.js";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
 import ElementIcon from "./ElementIcon.jsx";
@@ -23,6 +24,7 @@ export default function DetailModal({ character, progress, actions, onRemove, on
   }, [actions, onClose]);
   const dismiss = useModalDismiss(close);
 
+  const buildUrl = buildPageUrl(character);
   const metCount = STATS.filter((s) => statMet(progress.stats[s.key])).length;
   const trackedCount = STATS.filter((s) => progress.stats[s.key].target > 0).length;
 
@@ -241,6 +243,17 @@ export default function DetailModal({ character, progress, actions, onRemove, on
         </div>
 
         <div className="detail-foot">
+          {buildUrl && (
+            <a
+              className="btn-ghost build-link"
+              href={buildUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Build guide (opens in a new tab)"
+            >
+              Build guide <span aria-hidden="true">↗</span>
+            </a>
+          )}
           <button className="btn-ghost danger" onClick={onRemove}>
             Remove from archive
           </button>

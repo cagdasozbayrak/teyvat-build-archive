@@ -819,9 +819,19 @@
   color: var(--muted);
   margin: 8px 0 0;
 }
+/* Build guide on the left, remove on the right. margin-left: auto pushes the remove button
+   right instead of space-between, so it stays right even with no link beside it (custom
+   characters). Wraps instead of squeezing the labels on narrow screens. */
 .detail-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 16px 22px 22px;
   border-top: 1px solid var(--line);
+}
+.detail-foot .btn-ghost.danger {
+  margin-left: auto;
 }
 .btn-ghost {
   background: transparent;
@@ -835,6 +845,21 @@
 .btn-ghost.danger:hover {
   color: #ff7a6b;
   border-color: #5a2a2a;
+}
+/* Link to the character's build guide, in the element accent. Declared after .btn-ghost
+   so its color wins. */
+.build-link {
+  /* inline-flex so the button padding still shapes the box if this link is ever used
+     outside the flex footer. The gap replaces the text space the flex layout collapses. */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--el);
+}
+.build-link:hover {
+  background: var(--el-soft);
+  border-color: var(--el);
 }
 
 /* add modal */
