@@ -22,14 +22,19 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run sync:data
+        env:
+          # The character listing comes from the GitHub API. An unauthenticated runner IP
+          # gets 60 requests/hour, shared with every other job on that IP. The token
+          # raises it to 1,000 requests/hour for this repository.
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: peter-evans/create-pull-request@v6
         with:
           branch: chore/data-sync
           delete-branch: true
-          commit-message: "chore: sync roster and artifact sets from genshin.gg"
-          title: "chore: sync roster and artifact sets from genshin.gg"
+          commit-message: "chore: sync roster and artifact sets from the build source"
+          title: "chore: sync roster and artifact sets from the build source"
           body: |
-            Automated weekly sync from genshin.gg (union-merge, no deletions).
-            Review the added characters/sets before merging — new characters get
-            region "—" (and a guessed weapon if the page parse missed it); fill
-            those in here.
+            Automated weekly sync from the build data source (union-merge, no deletions).
+            Review the added characters/sets before merging. New characters get
+            region "—" (and a guessed weapon when the script can't read upstream
+            metadata). Fill those in here.
