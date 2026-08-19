@@ -9,6 +9,8 @@ for every character you're building.
 The app runs entirely in your browser — no account, no install. Open the hosted link,
 click **Add**, pick your characters, and track their talents, artifacts, and stats.
 
+Each character's detail view links out to a community build guide.
+
 Your data is saved **in this browser on this device only**. There's no cross-device sync,
 and clearing the browser's site data will wipe your tracking (no export yet).
 
@@ -47,9 +49,10 @@ common tasks (add a character, artifact set, or stat) are one-line data edits un
 - **Saving:** on any standalone build (local or hosted), your data is stored in the
   browser via `localStorage`, so it persists between sessions on the same browser and
   device. There is no cross-device sync; clearing site data resets it.
-- **Portraits:** character art is loaded by name from the Genshin Fandom wiki at runtime
-  (nothing is bundled). If a portrait doesn't resolve — e.g. a brand-new or custom
-  character — you'll see the element crest instead, and you can paste any image URL in
-  that character's detail view to override it. Portraits require an internet connection.
+- **Portraits:** character art loads at runtime from the community Genshin Builds site,
+  falling back to the Genshin Fandom wiki and then the genshin.jmp.blue API. Nothing is
+  bundled. If none resolve, for example on a brand-new or custom character,
+  you'll see the element crest instead, and you can paste any image URL in that character's
+  detail view to override it. Portraits need an internet connection.
 - **No game import:** Genshin has no public API for your account inventory, so talents,
   artifacts, and stats are tracked manually.
