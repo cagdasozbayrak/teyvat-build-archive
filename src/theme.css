@@ -303,6 +303,16 @@
   color: #7c9bcc;
   font-weight: 700;
 }
+/* Stat targets met, alongside the reshape mark. Stats don't count toward the 8 items, so
+   this reports them separately and turns gold once every tracked target is reached. */
+.prog-stats {
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.prog-stats.met {
+  color: var(--gold);
+}
 .card-progress.done .prog-fill {
   background: var(--gold);
 }

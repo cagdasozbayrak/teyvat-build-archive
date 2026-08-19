@@ -1,7 +1,7 @@
 import { ELEMENTS } from "../data/elements.js";
-import { ARTIFACTS, ITEMS_PER_CHAR } from "../data/tracking.js";
+import { ARTIFACTS, STATS, ITEMS_PER_CHAR } from "../data/tracking.js";
 import { portraitCandidates } from "../data/portraits.js";
-import { countDone } from "../lib/progress.js";
+import { countDone, statMet } from "../lib/progress.js";
 import Portrait from "./Portrait.jsx";
 import WeaponIcon from "./WeaponIcon.jsx";
 import ElementIcon from "./ElementIcon.jsx";
@@ -18,6 +18,10 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
     (s) => progress.artifacts[s.key].reshape && progress.artifacts[s.key].status === "complete"
   ).length;
   const shapedPct = (shaped / ITEMS_PER_CHAR) * 100;
+  // Stats sit outside the 8 items, so they get their own marker rather than moving the bar.
+  // A stat counts as tracked once it has a target; characters tracking none show no marker.
+  const statsTracked = STATS.filter((s) => progress.stats[s.key].target > 0).length;
+  const statsMet = STATS.filter((s) => statMet(progress.stats[s.key])).length;
   return (
     <button
       className="card"
@@ -64,6 +68,15 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
             <span className="prog-mark">
               {" ↻"}
               {reshaping}
+            </span>
+          )}
+          {statsTracked > 0 && (
+            <span
+              className={"prog-stats" + (statsMet === statsTracked ? " met" : "")}
+              title={`${statsMet} of ${statsTracked} stat targets met`}
+            >
+              {" ◎"}
+              {statsMet}/{statsTracked}
             </span>
           )}
         </span>
