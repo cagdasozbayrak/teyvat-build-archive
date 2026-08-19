@@ -1,18 +1,25 @@
 // Full playable roster, current as of Genshin 6.7 (July 2026).
-// Tuple order: [name, element, weapon, rarity, region]. Mapped to objects below.
+// Tuple order: [name, element, weapon, rarity, region, slug?]. Mapped to objects below.
 // To add a newly released character, append a tuple here (or use the in-app
 // "New character" form, which stores custom units separately in saved data).
+// `slug` keys the build source for both the portrait and the build guide. Write it out
+// only when it differs from the slugified name. That happens where we shorten the
+// display name ("Raiden" is "shogun-raiden" upstream) or where the source picked a
+// different name ("Childe" is "tartaglia"). Display names stay short on purpose. `id`
+// is the name, so renaming a character orphans its saved progress.
+import { slugify } from "../lib/slug.js";
+
 const RAW = [
   // 5-star
   ["Albedo", "Geo", "Sword", 5, "Mondstadt"],
   ["Alhaitham", "Dendro", "Sword", 5, "Sumeru"],
   ["Aloy", "Cryo", "Bow", 5, "—"],
   ["Arlecchino", "Pyro", "Polearm", 5, "Snezhnaya"],
-  ["Ayaka", "Cryo", "Sword", 5, "Inazuma"],
-  ["Ayato", "Hydro", "Sword", 5, "Inazuma"],
+  ["Ayaka", "Cryo", "Sword", 5, "Inazuma", "kamisato-ayaka"],
+  ["Ayato", "Hydro", "Sword", 5, "Inazuma", "kamisato-ayato"],
   ["Baizhu", "Dendro", "Catalyst", 5, "Liyue"],
   ["Chasca", "Anemo", "Bow", 5, "Natlan"],
-  ["Childe", "Hydro", "Bow", 5, "Snezhnaya"],
+  ["Childe", "Hydro", "Bow", 5, "Snezhnaya", "tartaglia"],
   ["Chiori", "Geo", "Sword", 5, "Fontaine"],
   ["Citlali", "Cryo", "Catalyst", 5, "Natlan"],
   ["Clorinde", "Electro", "Sword", 5, "Fontaine"],
@@ -29,13 +36,13 @@ const RAW = [
   ["Ganyu", "Cryo", "Bow", 5, "Liyue"],
   ["Hu Tao", "Pyro", "Polearm", 5, "Liyue"],
   ["Ineffa", "Electro", "Polearm", 5, "Nod-Krai"],
-  ["Itto", "Geo", "Claymore", 5, "Inazuma"],
+  ["Itto", "Geo", "Claymore", 5, "Inazuma", "arataki-itto"],
   ["Jean", "Anemo", "Sword", 5, "Mondstadt"],
-  ["Kazuha", "Anemo", "Sword", 5, "Inazuma"],
+  ["Kazuha", "Anemo", "Sword", 5, "Inazuma", "kaedehara-kazuha"],
   ["Keqing", "Electro", "Sword", 5, "Liyue"],
   ["Kinich", "Dendro", "Claymore", 5, "Natlan"],
   ["Klee", "Pyro", "Catalyst", 5, "Mondstadt"],
-  ["Kokomi", "Hydro", "Catalyst", 5, "Inazuma"],
+  ["Kokomi", "Hydro", "Catalyst", 5, "Inazuma", "sangonomiya-kokomi"],
   ["Lauma", "Dendro", "Catalyst", 5, "Nod-Krai"],
   ["Linnea", "Geo", "Bow", 5, "Nod-Krai"],
   ["Lohen", "Cryo", "Polearm", 5, "Mondstadt"],
@@ -51,7 +58,7 @@ const RAW = [
   ["Nilou", "Hydro", "Sword", 5, "Sumeru"],
   ["Odette", "Cryo", "Sword", 5, "—"],
   ["Qiqi", "Cryo", "Sword", 5, "Liyue"],
-  ["Raiden", "Electro", "Polearm", 5, "Inazuma"],
+  ["Raiden", "Electro", "Polearm", 5, "Inazuma", "shogun-raiden"],
   ["Sandrone", "Cryo", "Claymore", 5, "Snezhnaya"],
   ["Shenhe", "Cryo", "Polearm", 5, "Liyue"],
   ["Sigewinne", "Hydro", "Bow", 5, "Fontaine"],
@@ -92,7 +99,7 @@ const RAW = [
   ["Freminet", "Cryo", "Claymore", 4, "Fontaine"],
   ["Gaming", "Pyro", "Claymore", 4, "Liyue"],
   ["Gorou", "Geo", "Bow", 4, "Inazuma"],
-  ["Heizou", "Anemo", "Catalyst", 4, "Inazuma"],
+  ["Heizou", "Anemo", "Catalyst", 4, "Inazuma", "shikanoin-heizou"],
   ["Iansan", "Electro", "Polearm", 4, "Natlan"],
   ["Ifa", "Anemo", "Catalyst", 4, "Natlan"],
   ["Illuga", "Geo", "Polearm", 4, "Nod-Krai"],
@@ -113,7 +120,7 @@ const RAW = [
   ["Prune", "Anemo", "Catalyst", 4, "Mondstadt"],
   ["Razor", "Electro", "Claymore", 4, "Mondstadt"],
   ["Rosaria", "Cryo", "Polearm", 4, "Mondstadt"],
-  ["Sara", "Electro", "Bow", 4, "Inazuma"],
+  ["Sara", "Electro", "Bow", 4, "Inazuma", "kujou-sara"],
   ["Sayu", "Anemo", "Claymore", 4, "Inazuma"],
   ["Sethos", "Electro", "Bow", 4, "Sumeru"],
   ["Sucrose", "Anemo", "Catalyst", 4, "Mondstadt"],
@@ -126,11 +133,12 @@ const RAW = [
   ["Yun Jin", "Geo", "Polearm", 4, "Liyue"],
 ];
 
-export const ROSTER = RAW.map(([name, element, weapon, rarity, region]) => ({
+export const ROSTER = RAW.map(([name, element, weapon, rarity, region, slug]) => ({
   id: name,
   name,
   element,
   weapon,
   rarity,
   region,
+  slug: slug || slugify(name),
 }));
