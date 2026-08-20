@@ -1,11 +1,9 @@
-// The three talents every character levels.
 export const TALENTS = [
   { key: "na", label: "Normal Attack" },
   { key: "skill", label: "Elemental Skill" },
   { key: "burst", label: "Elemental Burst" },
 ];
 
-// The five artifact slots.
 export const ARTIFACTS = [
   { key: "flower", label: "Flower of Life" },
   { key: "plume", label: "Plume of Death" },
@@ -14,7 +12,7 @@ export const ARTIFACTS = [
   { key: "circlet", label: "Circlet of Logos" },
 ];
 
-// Common build stats. `def` seeds a sensible target; flat stats start untracked (target 0).
+// `def` sets the initial target. A zero target leaves a stat untracked.
 export const STATS = [
   { key: "critRate", label: "CRIT Rate", unit: "%", def: 70 },
   { key: "critDmg", label: "CRIT DMG", unit: "%", def: 140 },
@@ -27,8 +25,8 @@ export const STATS = [
   { key: "healing", label: "Healing Bonus", unit: "%", def: 0 },
 ];
 
-// All farmable artifact sets (current through v6.7). Powers the set-name autocomplete;
-// free text is still allowed for brand-new sets not listed here.
+// Farmable sets through v6.7. This list drives autocomplete, but users may enter
+// unlisted sets.
 export const ARTIFACT_SETS = [
   "A Day Carved From Rising Winds",
   "Adventurer",
@@ -97,5 +95,5 @@ export const ARTIFACT_SETS = [
   "Wanderer's Troupe",
 ];
 
-// Total trackable items per character (3 talents + 5 artifacts) — the card ring denominator.
+// Card progress tracks three talents and five artifacts.
 export const ITEMS_PER_CHAR = TALENTS.length + ARTIFACTS.length;

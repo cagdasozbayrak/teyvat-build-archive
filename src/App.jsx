@@ -14,7 +14,6 @@ export default function App() {
   const t = useTracker();
   const { owned, byId, allRoster, loading, saveNote } = t;
 
-  // UI-only state.
   const [search, setSearch] = useState("");
   const [elemFilter, setElemFilter] = useState(null);
   const [hideDone, setHideDone] = useState(false);

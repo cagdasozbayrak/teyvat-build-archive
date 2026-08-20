@@ -26,7 +26,6 @@
   cursor: pointer;
 }
 
-/* hero */
 .hero {
   display: flex;
   align-items: center;
@@ -91,7 +90,6 @@
   color: var(--muted);
 }
 
-/* toolbar */
 .toolbar {
   display: flex;
   gap: 12px;
@@ -187,15 +185,13 @@
   letter-spacing: 0.04em;
 }
 
-/* grid */
 .grid {
   display: grid;
   gap: 16px;
   margin-top: 20px;
   grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
 }
-/* The portrait fills the card. Art on top, text over a scrim at the bottom, so the
-   card is the character rather than a row with a thumbnail on it. */
+/* Fill the card with portrait art and place text over a bottom scrim. */
 .card {
   position: relative;
   text-align: left;
@@ -229,9 +225,8 @@
   background: radial-gradient(circle, var(--el-soft), transparent 68%);
   pointer-events: none;
 }
-/* Square art anchored to the top of the card, bled past the left and right edges so the
-   transparent margin baked into the source doesn't read as padding. The top stays at 0:
-   pulling it up as well clips hats and headpieces, which sit at the very top of the frame. */
+/* Extend square art past the side edges to hide transparent source margins. Keep the top
+   at 0 to avoid clipping hats and headpieces. */
 .card-art {
   position: absolute;
   inset: 0 -6% auto;
@@ -247,13 +242,12 @@
 .card-art img {
   width: 100%;
   height: 100%;
-  /* contain, not cover: the source is a head-and-shoulders avatar on a transparent
-     background, so cropping it to fill would cut the face. */
+  /* Use contain because cover crops faces from transparent portrait assets. */
   object-fit: contain;
   object-position: top center;
 }
-/* Fades the lower half of the art into the panel so the name and bar stay readable
-   over any character. Literal rgba of --panel, since a var can't carry the alpha. */
+/* Fade art into the panel for readable text. Use rgba because --panel stores an opaque
+   hex color. */
 .card-veil {
   position: absolute;
   inset: auto 0 0;
@@ -278,7 +272,7 @@
   font-weight: 700;
   opacity: 0.9;
 }
-/* Last-resort crest, sized for the full card instead of the old 78px slot. */
+/* Size the fallback initial for the full card rather than the detail portrait. */
 .card-art .portrait-glyph {
   font-size: 84px;
   opacity: 0.55;
@@ -297,9 +291,8 @@
   margin-top: 7px;
   flex-wrap: wrap;
 }
-/* On a card the row must stay one line. Wrapping ("Dendro" + "Catalyst" overflows 140px)
-   lifts the name above the cards beside it and breaks the grid's alignment, so the weapon
-   label truncates instead. The detail head keeps the wrapping version. */
+/* Keep card metadata on one line so long labels do not shift neighboring names. Truncate
+   the weapon label. Detail metadata may wrap. */
 .card-info .card-meta {
   flex-wrap: nowrap;
   gap: 10px;
@@ -337,9 +330,8 @@
   background: var(--el);
   transition: width 0.4s ease;
 }
-/* The slice of the fill standing on pieces that are complete but flagged for
-   reshape — same length as those pieces, in a cooler tone so a card with work
-   still planned doesn't read as finished. */
+/* Tint the progress share for completed reshape pieces so planned work does not appear
+   finished. */
 .prog-reshape {
   position: absolute;
   top: 0;
@@ -361,8 +353,8 @@
   color: #7c9bcc;
   font-weight: 700;
 }
-/* Stat targets met, alongside the reshape mark. Stats don't count toward the 8 items, so
-   this reports them separately and turns gold once every tracked target is reached. */
+/* Show stat progress separately because stats do not count toward the eight tracked items.
+   Turn it gold when all tracked targets are met. */
 .prog-stats {
   color: var(--muted);
   font-weight: 700;
@@ -405,7 +397,6 @@
   font-family: "Inter", sans-serif;
 }
 
-/* empty */
 .empty {
   text-align: center;
   padding: 70px 20px;
@@ -430,7 +421,6 @@
   line-height: 1.5;
 }
 
-/* overlay + sheet */
 .overlay {
   position: fixed;
   inset: 0;
@@ -490,14 +480,12 @@
   color: var(--ink);
   border-color: #3a4459;
 }
-/* Detail close button pinned to the top-right corner of the sheet. */
 .detail-head .x {
   position: absolute;
   top: 14px;
   right: 14px;
 }
 
-/* detail */
 .detail-head {
   display: flex;
   gap: 16px;
@@ -528,8 +516,8 @@
   margin: 3px 0 5px;
   font-size: 26px;
 }
-/* Name and build guide share a row. The link keeps its label on one line and wraps under
-   the name on narrow screens rather than shrinking it. */
+/* Keep the guide label on one line. On narrow screens, wrap the link below the name instead
+   of shrinking it. */
 .detail-name-row {
   display: flex;
   align-items: center;
@@ -568,7 +556,6 @@
   margin-left: 6px;
 }
 
-/* stats */
 .stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -666,7 +653,6 @@
   font-weight: 800;
 }
 
-/* talent rows with steppers */
 .tal-row {
   display: flex;
   align-items: center;
@@ -739,7 +725,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* confirm dialog */
 .confirm {
   max-width: 380px;
   padding: 24px 24px 20px;
@@ -770,7 +755,6 @@
   color: #ff9a8a;
 }
 
-/* artifacts */
 .apply-all {
   display: flex;
   gap: 8px;
@@ -899,8 +883,8 @@
   color: var(--muted);
   margin: 8px 0 0;
 }
-/* Remove button on the right. margin-left: auto instead of space-between, so it stays
-   right as the only child. Wraps instead of squeezing the label on narrow screens. */
+/* Push the lone remove button right with margin-left: auto. Allow wrapping on narrow
+   screens so its label keeps its width. */
 .detail-foot {
   display: flex;
   align-items: center;
@@ -925,11 +909,9 @@
   color: #ff7a6b;
   border-color: #5a2a2a;
 }
-/* Link to the character's build guide, in the element accent. Declared after .btn-ghost
-   so its color wins. */
+/* Place this rule after .btn-ghost so the element accent wins. */
 .build-link {
-  /* inline-flex so the button padding still shapes the box if this link is ever used
-     outside a flex row. The gap replaces the text space the flex layout collapses. */
+  /* Use inline-flex so padding shapes the link outside flex rows. */
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -941,7 +923,6 @@
   border-color: var(--el);
 }
 
-/* add modal */
 .add-head {
   display: flex;
   align-items: center;

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-// Tries each URL in `srcs` in order, advancing on error. When all fail (or the
-// list is empty), renders the element-colored crest with the character's initial.
+// Try `srcs` in order. If none load, show an element-colored initial.
 export default function Portrait({ srcs, name, color }) {
   const [i, setI] = useState(0);
   const key = srcs.join("|");

@@ -1,21 +1,14 @@
-// Refresh the static roster + artifact sets from the community build site, which keeps
-// up with the current game. (The jmp.blue API lags and misses the newest units.) The
-// site builds its pages from JSON in a public repo, so this reads that JSON instead of
-// scraping HTML. A bad read stays contained because the merge never deletes and a human
-// reviews the sync PR.
+// Sync the static roster and artifact sets with Genshin Builds.
 //
-// Sources, all from the build repo's default branch:
-//   - the file listing: one src/content/<element>/<rarity>/<slug>/metadata.json per
-//     character (the Traveler gets one per element), which is where element, rarity and
-//     slug come from
-//   - src/i18n/en/characters.json: slug -> English display name
-//   - that same metadata.json: weapon type, read only for characters we don't have yet
-//   - src/data/artifacts/artifact_sets.json + src/i18n/en/artifact-sets.json: set names
+// Sources on the default branch:
+// - repository tree: character elements, rarities, and slugs
+// - src/i18n/en/characters.json: English character names
+// - character metadata.json files: weapons for new characters
+// - src/data/artifacts/artifact_sets.json and src/i18n/en/artifact-sets.json: set names
 //
-// Matching is by slug, not name, so our shortened display names ("Raiden", "Childe")
-// survive a sync. `id` is the name, and renaming would orphan saved progress. Upstream
-// has no region field, so new entries get "—" for a human to fill in during PR review.
-// Run: npm run sync:data
+// Match by slug to preserve local display names and saved IDs. The merge never deletes
+// local characters. New characters use the region placeholder until PR review.
+// Run with `npm run sync:data`.
 import { readFile, writeFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -28,9 +21,8 @@ const CDN_LISTING = `https://data.jsdelivr.com/v1/packages/gh/${REPO}@${BRANCH}?
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const ROSTER_FILE = "src/data/roster.js";
 const TRACKING_FILE = "src/data/tracking.js";
-// Upstream content directories name elements in lowercase and the roster capitalizes them,
-// so cap() restores the roster's casing for elements here and for weapon names below. This
-// list also filters out any content directory that isn't an element.
+// Upstream uses lowercase element names. Normalize elements and weapons to the roster's
+// casing. ELEMENTS also rejects content directories that are not elements.
 const ELEMENTS = ["Anemo", "Geo", "Electro", "Dendro", "Hydro", "Pyro", "Cryo"];
 const WEAPONS = ["Sword", "Claymore", "Polearm", "Bow", "Catalyst"];
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -41,13 +33,9 @@ async function getJSON(url, headers = {}) {
   return res.json();
 }
 
-// Every path in the repo, each with a leading slash. The GitHub tree includes directory
-// entries and the jsDelivr mirror doesn't. Either way the regex below skips every path that
-// isn't a metadata.json. The GitHub tree reflects the branch head, but unauthenticated calls
-// get 60 requests/hour per IP, so the workflow passes GITHUB_TOKEN to lift the cap on a
-// shared runner. The jsDelivr mirror needs no auth, yet it can lag the branch, and a stale
-// listing drops new characters without erroring. So GitHub goes first, and a rate-limit
-// refusal or a truncated tree falls through to the mirror.
+// Prefer GitHub because jsDelivr can lag and omit new characters. Reject truncated GitHub
+// trees and fall back to jsDelivr on any GitHub error. GITHUB_TOKEN raises the API limit on
+// shared CI runners. Both listings return paths with a leading slash.
 async function listFiles() {
   const headers = { "User-Agent": "teyvat-build-archive-sync" };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
@@ -62,9 +50,8 @@ async function listFiles() {
   }
 }
 
-// One character per src/content/<element>/<rarity>/<slug>/metadata.json in the listing.
-// The Traveler lives under every element, so it collapses to the first one seen here and
-// main() puts the roster's own element back.
+// Parse one metadata file per character. Traveler appears under each element, so keep the
+// first entry here. main() restores the roster's element.
 function parseCharacters(paths, names) {
   const re = /^\/src\/content\/([a-z]+)\/(\d)\/([a-z0-9-]+)\/metadata\.json$/;
   const out = [];
@@ -73,9 +60,8 @@ function parseCharacters(paths, names) {
     const m = re.exec(path);
     if (!m) continue;
     const [, element, rarity, slug] = m;
-    // Filter before claiming the slug. Upstream already keeps non-character files under
-    // src/content/site, and a path under a directory like that would otherwise claim the
-    // slug and hide the character's real entry.
+    // Validate the element and rarity before reserving the slug. This prevents a
+    // non-character path such as src/content/site/... from hiding the real entry.
     if (!ELEMENTS.includes(cap(element))) continue;
     if (Number(rarity) !== 4 && Number(rarity) !== 5) continue;
     if (seen.has(slug)) continue; // Traveler, listed once per element
@@ -90,8 +76,7 @@ function parseCharacters(paths, names) {
   return out;
 }
 
-// artifact_sets.json lists the sets that exist and the English i18n file names them.
-// Iterating the sets means an i18n name with no set behind it never gets read.
+// Read only names backed by an entry in artifact_sets.json.
 function parseSets(sets, names) {
   const out = [];
   for (const slug of Object.keys(sets)) {
@@ -102,26 +87,22 @@ function parseSets(sets, names) {
 }
 
 async function main() {
-  // --- characters ---
   const [paths, charNames] = await Promise.all([
     listFiles(),
     getJSON(`${RAW_BASE}/src/i18n/en/characters.json`),
   ]);
   const upstream = parseCharacters(paths, charNames);
-  // 50 is far below the ~119 upstream carries, so this only trips on a layout change, not
-  // on a quiet patch week.
+  // Upstream normally has about 119 characters. Fewer than 50 indicates a layout change.
   if (upstream.length < 50) {
     throw new Error(`only ${upstream.length} characters parsed, upstream layout likely changed`);
   }
 
   const { ROSTER } = await import(new URL("../src/data/roster.js", import.meta.url));
-  // Two roster rows sharing a slug would collapse into one entry of the map below, and the
-  // loser would vanish from the rewritten file without showing up in `kept`. Check here,
-  // where the drop would happen, rather than after the merge, where it is already invisible.
+  // Reject duplicate roster slugs before building the map. Otherwise the later row replaces
+  // the earlier row and the rewrite drops it.
   const dupSlug = ROSTER.map((c) => c.slug).find((s, i, a) => a.indexOf(s) !== i);
   if (dupSlug !== undefined) throw new Error(`two roster rows share the slug "${dupSlug}"`);
-  // Existing tuples keyed by slug. The display name (0), weapon (2) and region (4) are
-  // hand-maintained, so keep them and refresh only element (1) and rarity (3).
+  // Preserve hand-maintained names, weapons, and regions. Refresh elements and rarities.
   const existing = new Map(
     ROSTER.map((c) => [c.slug, [c.name, c.element, c.weapon, c.rarity, c.region, c.slug]])
   );
@@ -131,21 +112,20 @@ async function main() {
   for (const c of upstream) {
     const e = existing.get(c.slug);
     if (e) {
-      // The Traveler keeps its element too, since upstream lists one per element.
+      // Preserve Traveler's roster element because upstream lists it under every element.
       const element = c.slug === "traveler" ? e[1] : c.element;
       result.set(c.slug, [e[0], element, e[2], c.rarity, e[4], c.slug]);
       continue;
     }
-    // New character. Fetch its metadata for the weapon type. Upstream has no region, so
-    // it lands as "—".
+    // Fetch weapons separately for new characters. Upstream does not provide regions.
     let weapon = null;
     try {
       const meta = await getJSON(
         `${RAW_BASE}/src/content/${c.element.toLowerCase()}/${c.rarity}/${c.slug}/metadata.json`
       );
       const w = cap(String(meta.weapon || ""));
-      // A weapon we don't recognize means the field moved or changed shape upstream, which
-      // would otherwise look the same as one flaky request: every new character guessed.
+      // Log unknown weapons separately from request failures. A schema change could make
+      // every new weapon default to Sword.
       if (WEAPONS.includes(w)) weapon = w;
       else console.warn(`unexpected weapon ${JSON.stringify(meta.weapon)} for ${c.slug}`);
     } catch (err) {
@@ -159,7 +139,6 @@ async function main() {
     );
   }
 
-  // Keep characters the build site doesn't list.
   const kept = [];
   for (const [slug, e] of existing) {
     if (!result.has(slug)) {
@@ -167,27 +146,19 @@ async function main() {
       kept.push(e);
     }
   }
-  // A row only carries an explicit slug in order to point at an upstream entry, so if such
-  // a row goes unmatched, upstream renamed that slug or dropped the character. On a rename
-  // upstream arrives as a second row under its own name, and since ours is shorter or just
-  // different ("Childe" for "Tartaglia"), the two names differ and the duplicate-name check
-  // below never sees it. Both rows would be written, one of them linking to a 404 and
-  // showing no build-source portrait. Stop and let a human repoint the slug, or drop it if
-  // the character really did leave upstream. This is not a complete net: a row without an
-  // explicit slug that upstream renames in both slug and display name lands the same way,
-  // with the old row in `kept` and the new one added under its new name.
+  // An explicit slug points to a known upstream row. If it no longer matches, upstream may
+  // have renamed the slug or removed the character. Stop before writing a stale row and a
+  // duplicate under the new slug. This cannot detect a rename when both the display name
+  // and an implicit slug change.
   const stale = kept.find((e) => e[5] !== slugify(e[0]));
   if (stale !== undefined) {
     throw new Error(`roster slug "${stale[5]}" (${stale[0]}) no longer exists upstream`);
   }
 
   const all = [...result.values()];
-  // Display names have to stay unique too. The name is the character's `id` in saved data,
-  // and `byId` in useTracker is an Object.fromEntries, so of two rows sharing a name the
-  // later one wins and the other disappears from the app. It happens two ways. Upstream
-  // renames a slug, so the old row survives the merge above while the new one arrives under
-  // the same name, or a new upstream character's name matches one of the nine we rename by
-  // hand. Let a human pick before anything is written.
+  // Display names are saved character IDs and keys in useTracker's byId object. Reject a
+  // duplicate before the later row hides the earlier one. Duplicates can follow an upstream
+  // slug rename or collide with a local display-name override.
   const dupName = all.map((t) => t[0]).find((n, i, a) => a.indexOf(n) !== i);
   if (dupName !== undefined) {
     throw new Error(`two rows share the display name "${dupName}" after merge`);
@@ -211,7 +182,6 @@ async function main() {
   let rsrc = await readFile(ROSTER_FILE, "utf8");
   rsrc = rsrc.replace(/const RAW = \[[\s\S]*?\n\];/, `const RAW = [\n${rawBody}\n];`);
 
-  // --- artifact sets ---
   const [setData, setNames] = await Promise.all([
     getJSON(`${RAW_BASE}/src/data/artifacts/artifact_sets.json`),
     getJSON(`${RAW_BASE}/src/i18n/en/artifact-sets.json`),
@@ -240,7 +210,7 @@ async function main() {
     `export const ARTIFACT_SETS = [\n${setsBody}\n];`
   );
 
-  // --- write (only after everything fetched) + format ---
+  // Write only after both syncs succeed, then format both files.
   await writeFile(ROSTER_FILE, rsrc);
   await writeFile(TRACKING_FILE, tsrc);
   await promisify(execFile)("npx", ["prettier", "--write", ROSTER_FILE, TRACKING_FILE]);

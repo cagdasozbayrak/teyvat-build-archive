@@ -1,7 +1,6 @@
 import { TALENTS, ARTIFACTS, STATS } from "../data/tracking.js";
 import { TALENT_MAX, DEFAULT_TARGET, clamp } from "./constants.js";
 
-// A fresh, empty progress record for a newly added character.
 export const blankProgress = () => ({
   talents: TALENTS.reduce((a, t) => ((a[t.key] = { lvl: 1, target: DEFAULT_TARGET }), a), {}),
   artifacts: ARTIFACTS.reduce(
@@ -13,8 +12,7 @@ export const blankProgress = () => ({
   addedAt: Date.now(),
 });
 
-// Bring any stored record into the current shape, including the old string-based
-// talent format ("complete" / "upgrade") from early versions of the app.
+// Normalize saved progress and migrate the legacy "complete" and "upgrade" talent strings.
 export function normalizeProgress(p) {
   p = p || {};
   const np = {
@@ -50,8 +48,7 @@ export function normalizeProgress(p) {
 
   STATS.forEach((s) => {
     const v = p.stats ? p.stats[s.key] : null;
-    // Coerce first so numeric strings from older/hand-edited saves survive
-    // instead of being silently reset to 0 / the default.
+    // Convert numeric strings before applying fallbacks so edited or old saves keep them.
     const cur = v ? Number(v.cur) : NaN;
     const target = v ? Number(v.target) : NaN;
     np.stats[s.key] = {
@@ -63,13 +60,11 @@ export function normalizeProgress(p) {
   return np;
 }
 
-// A talent is "done" once its level reaches its target.
 export const talentDone = (t) => t.lvl >= t.target;
 
-// A stat target is "met" only when a target is set and the current value reaches it.
 export const statMet = (s) => s.target > 0 && s.cur >= s.target;
 
-// Count of completed items (done talents + complete artifacts) for the card ring.
+// Card progress counts completed talents and artifacts.
 export const countDone = (p) =>
   p
     ? TALENTS.filter((t) => talentDone(p.talents[t.key])).length +

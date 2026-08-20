@@ -6,8 +6,8 @@ import { STORAGE_KEY, TALENT_MAX, clamp } from "../lib/constants.js";
 import { store } from "../lib/storage.js";
 import { blankProgress, normalizeProgress } from "../lib/progress.js";
 
-// Coerce a stored custom-roster list into safe entries so an unknown element or
-// weapon (hand-edited storage, older add-flow) can't crash the detail sheet.
+// Filter malformed custom entries and default invalid fields so edited or old saves cannot
+// break the detail sheet.
 function sanitizeCustom(list) {
   if (!Array.isArray(list)) return [];
   return list
@@ -22,11 +22,10 @@ function sanitizeCustom(list) {
     }));
 }
 
-// Owns the persisted tracker state (owned characters + custom roster additions)
-// and every mutation. UI-only state (search, filters, open modals) lives in App.
+// Manage persisted characters, custom roster entries, and their mutations. App owns UI state.
 export function useTracker() {
   const [owned, setOwned] = useState({}); // { charId: progress }
-  const [custom, setCustom] = useState([]); // extra roster entries the user created
+  const [custom, setCustom] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saveNote, setSaveNote] = useState("");
 
@@ -35,7 +34,7 @@ export function useTracker() {
 
   const noteTimer = useRef(null);
 
-  // Load once on mount. store.get never throws, so only JSON.parse can fail here.
+  // Load once. store.get catches storage errors, so only JSON.parse can throw.
   useEffect(() => {
     (async () => {
       const res = await store.get(STORAGE_KEY);
@@ -49,8 +48,7 @@ export function useTracker() {
           setOwned(o);
           setCustom(sanitizeCustom(d.custom));
         } catch (e) {
-          // A value exists but is unparseable. Stash it under a backup key so the
-          // next save can't silently overwrite (possibly recoverable) data.
+          // Back up malformed data so a later save cannot overwrite it.
           store.set(STORAGE_KEY + ":corrupt", res.value);
         }
       }
@@ -68,7 +66,7 @@ export function useTracker() {
     })();
   }, []);
 
-  // Apply a state change and persist it. Pass null to leave owned/custom untouched.
+  // Update and persist both state slices. Pass null to keep a slice unchanged.
   const update = useCallback(
     (nextOwned, nextCustom) => {
       const o = nextOwned ?? owned;
@@ -80,8 +78,7 @@ export function useTracker() {
     [owned, custom, persist]
   );
 
-  // Persist the current in-memory state (used by fields that update instantly
-  // while typing and commit on blur).
+  // Persist fields that update in memory while typing and save on blur.
   const commitField = useCallback(() => persist(owned, custom), [persist, owned, custom]);
 
   const addChar = (id) => {
@@ -103,7 +100,7 @@ export function useTracker() {
   const setTalent = (id, key, patch) => {
     const p = owned[id];
     const next = { ...p.talents[key], ...patch };
-    // Clamp defensively, then keep target at or above level so "done" stays meaningful.
+    // Clamp both values and keep the level at or below the target.
     next.lvl = clamp(next.lvl, 1, TALENT_MAX);
     next.target = clamp(next.target, 1, TALENT_MAX);
     if (patch.lvl != null && next.target < next.lvl) next.target = next.lvl;
@@ -145,7 +142,7 @@ export function useTracker() {
     update({ ...owned, [id]: { ...p, artifacts } }, null);
   };
 
-  // Instant-update fields (persist on blur via commitField).
+  // Update typing fields in memory. commitField persists them on blur.
   const setArtifactSet = (id, key, val) => {
     const p = owned[id];
     setOwned({
@@ -154,9 +151,8 @@ export function useTracker() {
     });
   };
 
-  // Stats commit on blur with the raw input string, coerced here. Coercing per
-  // keystroke (with a number input) makes decimals like "77.5" impossible to type,
-  // so the field keeps a raw buffer and calls this once, persisting atomically.
+  // Keep raw stat text until blur so users can type decimals such as "77.5". Convert and
+  // persist the value once on commit.
   const commitStat = (id, key, field, val) => {
     const p = owned[id];
     const num = String(val).trim() === "" ? 0 : Math.max(0, Number(val) || 0);

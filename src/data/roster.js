@@ -1,12 +1,10 @@
-// Full playable roster, current as of Genshin 6.7 (July 2026).
-// Tuple order: [name, element, weapon, rarity, region, slug?]. Mapped to objects below.
-// To add a newly released character, append a tuple here (or use the in-app
-// "New character" form, which stores custom units separately in saved data).
-// `slug` keys the build source for both the portrait and the build guide. Write it out
-// only when it differs from the slugified name. That happens where we shorten the
-// display name ("Raiden" is "shogun-raiden" upstream) or where the source picked a
-// different name ("Childe" is "tartaglia"). Display names stay short on purpose. `id`
-// is the name, so renaming a character orphans its saved progress.
+// Playable roster through Genshin 6.7, July 2026.
+// Tuple fields: [name, element, weapon, rarity, region, slug?].
+// Add released characters here. The "New character" form stores custom entries only in
+// saved data.
+// `slug` keys the build portrait and guide. Set it only when it differs from
+// `slugify(name)`, such as "shogun-raiden" or "tartaglia". Character IDs equal names, so
+// renaming a character orphans its saved progress.
 import { slugify } from "../lib/slug.js";
 
 const RAW = [

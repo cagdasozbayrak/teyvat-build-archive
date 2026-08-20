@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 env:
-  HUSKY: 0 # don't run the local pre-commit hook inside CI commits
+  HUSKY: 0 # Skip the local pre-commit hook in CI.
 
 jobs:
   sync:
@@ -23,9 +23,8 @@ jobs:
       - run: npm ci
       - run: npm run sync:data
         env:
-          # The character listing comes from the GitHub API. An unauthenticated runner IP
-          # gets 60 requests/hour, shared with every other job on that IP. The token
-          # raises it to 1,000 requests/hour for this repository.
+          # Unauthenticated runners share a 60-request hourly limit per IP. This token
+          # raises the repository's limit to 1,000 requests per hour.
           GITHUB_TOKEN: ${{ github.token }}
       - uses: peter-evans/create-pull-request@v6
         with:

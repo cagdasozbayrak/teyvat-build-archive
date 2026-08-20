@@ -22,7 +22,6 @@ export default function AddModal({ roster, owned, onAdd, onAddCustom, onClose })
     [roster, owned, ef, q]
   );
 
-  // Custom character form.
   const [cn, setCn] = useState("");
   const [ce, setCe] = useState("Anemo");
   const [cw, setCw] = useState("Sword");

@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { ELEMENTS } from "../data/elements.js";
 
-// Official element sigil, falling back to a dot in the element color when the image fails
-// to load (offline, or the CDN moved). An unknown element skips the image and renders the
-// dot with no background at all, since ELEMENTS has no entry to color it with and .dot
-// declares none, so it comes out as an empty gap. This host stays even though
-// roster and portrait data moved to the build source, which ships no sigil assets.
+// Load the official sigil from the external host. If it fails, show an element-colored dot.
+// Unknown elements render an empty dot because ELEMENTS has no matching color. The build
+// source does not provide sigil assets.
 const ICON_BASE = "https://sunderarmor.com/GENSHIN/Elements/Element_";
 
 export default function ElementIcon({ element, size = 14 }) {

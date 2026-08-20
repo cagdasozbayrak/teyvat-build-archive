@@ -17,7 +17,7 @@ export default function DetailModal({ character, progress, actions, onRemove, on
   const soft = ELEMENTS[character.element].soft;
   const id = character.id;
 
-  // Commit any in-progress field edit before closing (Escape or backdrop).
+  // Commit the active field before any close action.
   const close = useCallback(() => {
     actions.commitField();
     onClose();
@@ -79,7 +79,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
         </div>
 
         <div className="detail-body">
-          {/* Talents */}
           <section>
             <h3>
               Talents <span className="opt">level {"\u2192"} target</span>
@@ -118,7 +117,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
             })}
           </section>
 
-          {/* Artifacts */}
           <section>
             <h3>Artifacts</h3>
             <datalist id="gbt-artifact-sets">
@@ -189,7 +187,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
             })}
           </section>
 
-          {/* Stats */}
           <section className="full">
             <h3>
               Stats{" "}
@@ -236,7 +233,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
             </p>
           </section>
 
-          {/* Portrait override */}
           <section className="full img-section">
             <h3>
               Portrait <span className="opt">auto by name</span>
@@ -265,8 +261,7 @@ export default function DetailModal({ character, progress, actions, onRemove, on
   );
 }
 
-// A numeric field that keeps the raw typed string while focused (so partial
-// values like "77." are preserved) and coerces to a number only on blur.
+// Preserve raw text while focused so partial decimals such as "77." survive. Convert on blur.
 function StatField({ className, value, placeholder, onCommit }) {
   const [buf, setBuf] = useState(null);
   const shown = buf ?? (value || "");

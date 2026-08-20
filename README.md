@@ -1,58 +1,53 @@
 # Teyvat Build Archive
 
-A Genshin Impact character build tracker — track talents (level + target), artifacts
-(complete / upgrade needed, set name, reshape flag), and build stats (current vs target)
-for every character you're building.
+A browser-based Genshin Impact build tracker. Record talent levels and targets, artifact
+status and sets, reshape plans, and current and target stats for each character.
 
 ## Using it
 
-The app runs entirely in your browser — no account, no install. Open the hosted link,
-click **Add**, pick your characters, and track their talents, artifacts, and stats.
+The app runs in your browser without an account or installation. Select **Add** and choose
+the characters you want to track.
 
-Each character's detail view links out to a community build guide.
+Each built-in character links to a community build guide from its detail view.
 
-Your data is saved **in this browser on this device only**. There's no cross-device sync,
-and clearing the browser's site data will wipe your tracking (no export yet).
+The app saves data for the current browser and site. It does not sync across devices or
+support exports. Clearing the site's browser data deletes your tracking data.
 
-## Requirements
+## Run locally
 
-- [Node.js](https://nodejs.org) 18 or newer (includes `npm`).
-
-## Run it
+Install [Node.js](https://nodejs.org) 18 or newer. Node.js includes `npm`.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the URL it prints (usually http://localhost:5173).
+Open the URL printed by Vite, usually `http://localhost:5173`.
 
-## Build a static version
+To build and preview the production version:
 
 ```bash
-npm run build     # outputs to dist/
-npm run preview   # serve the built version locally
+npm run build     # write the production build to dist/
+npm run preview   # serve the production build locally
 ```
 
-The contents of `dist/` are plain static files you can host anywhere.
+Deploy the files in `dist/` to a static hosting service.
 
 ## Project structure
 
-Source is organized under `src/` into `data/` (static game data), `lib/` (storage +
-progress logic), `hooks/` (state), and `components/` (UI), composed by `App.jsx`.
-Styles live in `src/theme.css`. Each module carries notes on its own conventions;
-common tasks (add a character, artifact set, or stat) are one-line data edits under
-`src/data/`.
+Application code is under `src/`. The `data/` directory contains game data, `lib/`
+contains storage and progress logic, `hooks/` contains React hooks, and `components/`
+contains UI components. `App.jsx` assembles the application. Global styles are in
+`src/index.css`, and component styles are in `src/theme.css`.
 
-## Notes
+Run `npm run sync:data` to refresh the roster and artifact sets. Other game-data changes
+belong under `src/data/`.
 
-- **Saving:** on any standalone build (local or hosted), your data is stored in the
-  browser via `localStorage`, so it persists between sessions on the same browser and
-  device. There is no cross-device sync; clearing site data resets it.
-- **Portraits:** character art loads at runtime from the community Genshin Builds site,
-  falling back to the Genshin Fandom wiki and then the genshin.jmp.blue API. Nothing is
-  bundled. If none resolve, for example on a brand-new or custom character,
-  you'll see the element crest instead, and you can paste any image URL in that character's
-  detail view to override it. Portraits need an internet connection.
-- **No game import:** Genshin has no public API for your account inventory, so talents,
-  artifacts, and stats are tracked manually.
+## Data and limitations
+
+- Character portraits load from Genshin Builds through jsDelivr, then from the Genshin
+  Fandom wiki, and finally from genshin.jmp.blue. If every source fails, the app shows the
+  character's initial. You can set a portrait URL in the character's detail view.
+- Portraits and element icons require an internet connection.
+- Genshin does not provide a public account-inventory API. You must enter talents,
+  artifacts, and stats manually.

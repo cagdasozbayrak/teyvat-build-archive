@@ -1,7 +1,5 @@
-// Persistence shim.
-// Uses the host's window.storage when present (some embedded hosts inject it),
-// otherwise falls back to localStorage so the app works when run standalone.
-// Both methods return { key, value } | null and never throw.
+// Use window.storage when a host provides it. Otherwise use localStorage. Both methods
+// catch storage errors and return { key, value } or null.
 export const store = {
   async get(key) {
     try {

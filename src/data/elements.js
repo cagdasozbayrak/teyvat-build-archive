@@ -1,4 +1,3 @@
-// Genshin's seven elements and their accent colors (used for tiles, glows, rings).
 export const ELEMENTS = {
   Anemo: { color: "#6fd6b4", soft: "rgba(111,214,180,0.16)" },
   Geo: { color: "#f0b03a", soft: "rgba(240,176,58,0.16)" },
@@ -10,7 +9,6 @@ export const ELEMENTS = {
 };
 export const ELEMENT_LIST = Object.keys(ELEMENTS);
 
-// SVG path data for each weapon type, drawn by <WeaponIcon>.
 export const WEAPON_PATHS = {
   Sword: "M4 20l4-4M8 16l9-9 3-3-1 4-9 9M8 16l1 1",
   Claymore: "M5 19l5-5M10 14l8-8 1-4-4 1-8 8 1 1 2 2M5 19l2-2",

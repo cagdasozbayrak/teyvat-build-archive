@@ -1,11 +1,7 @@
 import { useEffect, useRef } from "react";
 
-// Shared modal dismissal behaviour:
-// - Escape closes the modal.
-// - A backdrop click closes only when the press STARTED on the overlay itself,
-//   so selecting text inside a field and releasing on the backdrop doesn't
-//   close (and discard edits).
-// Returns props to spread on the overlay element.
+// Close on Escape or a click that starts and ends on the overlay. Requiring both mouse
+// events prevents text selection released over the backdrop from discarding edits.
 export function useModalDismiss(onDismiss) {
   const downOnOverlay = useRef(false);
 

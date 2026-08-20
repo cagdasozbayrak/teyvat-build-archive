@@ -11,15 +11,14 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
   const done = countDone(progress);
   const full = done === ITEMS_PER_CHAR;
   const pct = Math.round((done / ITEMS_PER_CHAR) * 100);
-  // Pieces flagged for reshape count as complete, so the bar would otherwise read as
-  // finished. Tint the tail of the fill that covers them instead.
+  // Completed reshape pieces count toward progress. Tint their share of the bar to show
+  // planned work.
   const reshaping = ARTIFACTS.filter((s) => progress.artifacts[s.key].reshape).length;
   const shaped = ARTIFACTS.filter(
     (s) => progress.artifacts[s.key].reshape && progress.artifacts[s.key].status === "complete"
   ).length;
   const shapedPct = (shaped / ITEMS_PER_CHAR) * 100;
-  // Stats sit outside the 8 items, so they get their own marker rather than moving the bar.
-  // A stat counts as tracked once it has a target; characters tracking none show no marker.
+  // Stats do not affect the eight-item bar. Show a separate marker when any target is set.
   const statsTracked = STATS.filter((s) => progress.stats[s.key].target > 0).length;
   const statsMet = STATS.filter((s) => statMet(progress.stats[s.key])).length;
   return (
