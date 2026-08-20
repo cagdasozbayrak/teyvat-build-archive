@@ -444,7 +444,6 @@
   display: flex;
   gap: 16px;
   align-items: center;
-  flex-wrap: wrap;
   padding: 22px 58px 18px 22px;
   border-bottom: 1px solid var(--line);
   position: relative;
@@ -471,10 +470,15 @@
   margin: 3px 0 5px;
   font-size: 26px;
 }
-/* Build guide sits at the right end of the head. The head's 58px right padding keeps it
-   clear of the pinned close button. It wraps to its own line before the title squeezes. */
-.detail-head .build-link {
-  margin-left: auto;
+/* Name and build guide share a row. The link keeps its label on one line and wraps under
+   the name on narrow screens rather than shrinking it. */
+.detail-name-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.detail-name-row .build-link {
   flex: none;
   white-space: nowrap;
 }
