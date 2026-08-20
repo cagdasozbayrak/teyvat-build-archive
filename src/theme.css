@@ -444,6 +444,7 @@
   display: flex;
   gap: 16px;
   align-items: center;
+  flex-wrap: wrap;
   padding: 22px 58px 18px 22px;
   border-bottom: 1px solid var(--line);
   position: relative;
@@ -469,6 +470,13 @@
   font-family: "Cinzel", serif;
   margin: 3px 0 5px;
   font-size: 26px;
+}
+/* Build guide sits at the right end of the head. The head's 58px right padding keeps it
+   clear of the pinned close button. It wraps to its own line before the title squeezes. */
+.detail-head .build-link {
+  margin-left: auto;
+  flex: none;
+  white-space: nowrap;
 }
 .detail-body {
   padding: 20px 22px;
@@ -829,9 +837,8 @@
   color: var(--muted);
   margin: 8px 0 0;
 }
-/* Build guide on the left, remove on the right. margin-left: auto pushes the remove button
-   right instead of space-between, so it stays right even with no link beside it (custom
-   characters). Wraps instead of squeezing the labels on narrow screens. */
+/* Remove button on the right. margin-left: auto instead of space-between, so it stays
+   right as the only child. Wraps instead of squeezing the label on narrow screens. */
 .detail-foot {
   display: flex;
   align-items: center;
@@ -860,7 +867,7 @@
    so its color wins. */
 .build-link {
   /* inline-flex so the button padding still shapes the box if this link is ever used
-     outside the flex footer. The gap replaces the text space the flex layout collapses. */
+     outside a flex row. The gap replaces the text space the flex layout collapses. */
   display: inline-flex;
   align-items: center;
   gap: 4px;

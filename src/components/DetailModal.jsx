@@ -60,6 +60,17 @@ export default function DetailModal({ character, progress, actions, onRemove, on
               {character.region !== "—" && <span className="region">{character.region}</span>}
             </div>
           </div>
+          {buildUrl && (
+            <a
+              className="btn-ghost build-link"
+              href={buildUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Build guide (opens in a new tab)"
+            >
+              Build guide <span aria-hidden="true">↗</span>
+            </a>
+          )}
           <button className="x" onClick={close} aria-label="Close">
             ✕
           </button>
@@ -243,17 +254,6 @@ export default function DetailModal({ character, progress, actions, onRemove, on
         </div>
 
         <div className="detail-foot">
-          {buildUrl && (
-            <a
-              className="btn-ghost build-link"
-              href={buildUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Build guide (opens in a new tab)"
-            >
-              Build guide <span aria-hidden="true">↗</span>
-            </a>
-          )}
           <button className="btn-ghost danger" onClick={onRemove}>
             Remove from archive
           </button>
