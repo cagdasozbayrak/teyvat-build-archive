@@ -34,52 +34,55 @@ export default function CharacterCard({ character, progress, onOpen, onRequestRe
       style={{ "--el": el.color, "--el-soft": el.soft }}
     >
       <div className="card-aura" />
-      <div className="card-portrait">
+      <div className="card-art">
         <Portrait
           srcs={progress.img ? [progress.img] : portraitCandidates(character)}
           name={character.name}
           color={el.color}
         />
       </div>
-      <div className="card-name">{character.name}</div>
-      <div className="card-meta">
-        <span className="el-tag" style={{ color: el.color }}>
-          <ElementIcon element={character.element} size={15} />
-          {character.element}
-        </span>
-        <span className="wpn">
-          <WeaponIcon type={character.weapon} color="#9aa4b6" />
-          {character.weapon}
-        </span>
-      </div>
-      <div className={"card-progress" + (full ? " done" : "")}>
-        <span className="prog-track">
-          <span className="prog-fill" style={{ width: `${pct}%` }} />
-          {shaped > 0 && (
-            <span
-              className="prog-reshape"
-              style={{ width: `${shapedPct}%`, left: `${pct - shapedPct}%` }}
-            />
-          )}
-        </span>
-        <span className="prog-label">
-          {done}/{ITEMS_PER_CHAR}
-          {reshaping > 0 && (
-            <span className="prog-mark">
-              {" ↻"}
-              {reshaping}
-            </span>
-          )}
-          {statsTracked > 0 && (
-            <span
-              className={"prog-stats" + (statsMet === statsTracked ? " met" : "")}
-              title={`${statsMet} of ${statsTracked} stat targets met`}
-            >
-              {" ◎"}
-              {statsMet}/{statsTracked}
-            </span>
-          )}
-        </span>
+      <div className="card-veil" />
+      <div className="card-info">
+        <div className="card-name">{character.name}</div>
+        <div className="card-meta">
+          <span className="el-tag" style={{ color: el.color }}>
+            <ElementIcon element={character.element} size={15} />
+            {character.element}
+          </span>
+          <span className="wpn">
+            <WeaponIcon type={character.weapon} color="#9aa4b6" />
+            {character.weapon}
+          </span>
+        </div>
+        <div className={"card-progress" + (full ? " done" : "")}>
+          <span className="prog-track">
+            <span className="prog-fill" style={{ width: `${pct}%` }} />
+            {shaped > 0 && (
+              <span
+                className="prog-reshape"
+                style={{ width: `${shapedPct}%`, left: `${pct - shapedPct}%` }}
+              />
+            )}
+          </span>
+          <span className="prog-label">
+            {done}/{ITEMS_PER_CHAR}
+            {reshaping > 0 && (
+              <span className="prog-mark">
+                {" ↻"}
+                {reshaping}
+              </span>
+            )}
+            {statsTracked > 0 && (
+              <span
+                className={"prog-stats" + (statsMet === statsTracked ? " met" : "")}
+                title={`${statsMet} of ${statsTracked} stat targets met`}
+              >
+                {" ◎"}
+                {statsMet}/{statsTracked}
+              </span>
+            )}
+          </span>
+        </div>
       </div>
     </button>
   );
