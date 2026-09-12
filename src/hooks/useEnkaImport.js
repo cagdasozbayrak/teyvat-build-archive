@@ -2,6 +2,24 @@ import { useState, useCallback, useRef } from "react";
 import { mapAvatar } from "../lib/enka.js";
 
 const UID = /^\d{9}$/;
+// A pasted Enka profile URL carries the UID after /u/ and can carry a trailing
+// path segment (a share hash) after it. Stripping all non-digits before
+// matching would glue the UID to digits from that later segment and produce a
+// wrong number instead of failing, so this scans for the first isolated run of
+// exactly nine digits instead.
+const UID_IN_TEXT = /(?<!\d)\d{9}(?!\d)/;
+
+// Accepts a bare UID or a pasted profile URL/text and returns the nine-digit
+// UID to send, or null if none can be found. A digits-only input must be
+// exactly nine digits: an 8- or 10-digit number is a typo, not a UID embedded
+// in surrounding text, so it is rejected rather than trimmed or padded.
+function extractUid(raw) {
+  const clean = raw.trim();
+  if (UID.test(clean)) return clean;
+  if (/^\d+$/.test(clean)) return null;
+  const match = clean.match(UID_IN_TEXT);
+  return match ? match[0] : null;
+}
 
 // The proxy forwards Enka's status, so each one gets its own sentence.
 const HTTP_MESSAGES = {
@@ -47,8 +65,8 @@ export function useEnkaImport({ byId, owned }) {
 
   const fetchProfile = useCallback(async () => {
     const reqId = ++requestRef.current;
-    const clean = uid.trim();
-    if (!UID.test(clean)) {
+    const parsedUid = extractUid(uid);
+    if (!parsedUid) {
       fail(reqId, HTTP_MESSAGES[400]);
       return;
     }
@@ -59,7 +77,7 @@ export function useEnkaImport({ byId, owned }) {
 
     let data;
     try {
-      const res = await fetch(`/api/enka?uid=${clean}`);
+      const res = await fetch(`/api/enka?uid=${parsedUid}`);
       if (!res.ok) {
         fail(
           reqId,
