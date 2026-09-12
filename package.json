@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "sync:data": "node scripts/sync-data.mjs",
+    "sync:data": "node scripts/sync-data.mjs && node scripts/sync-enka.mjs",
+    "sync:enka": "node scripts/sync-enka.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
