@@ -26,14 +26,21 @@ jobs:
           # Unauthenticated runners share a 60-request hourly limit per IP. This token
           # raises the repository's limit to 1,000 requests per hour.
           GITHUB_TOKEN: ${{ github.token }}
+      - run: npm run sync:enka
+        continue-on-error: true
       - uses: peter-evans/create-pull-request@v6
         with:
           branch: chore/data-sync
           delete-branch: true
-          commit-message: "chore: sync roster and artifact sets from the build source"
-          title: "chore: sync roster and artifact sets from the build source"
+          commit-message: "chore: sync roster, artifact sets and Enka tables from the build source"
+          title: "chore: sync roster, artifact sets and Enka tables from the build source"
           body: |
             Automated weekly sync from the build data source (union-merge, no deletions).
             Review the added characters/sets before merging. New characters get
             region "—" (and a guessed weapon when the script can't read upstream
             metadata). Fill those in here.
+
+            Also regenerates src/data/enka.js from Enka's published store. That step
+            runs with continue-on-error, so a failure there (for example, too few
+            matched characters) still lets this PR open with the roster and
+            artifact set changes.
