@@ -49,11 +49,17 @@ function prop(map, key, pct) {
 // from `getProgress`, because Enka cannot know them. Returns null when the store has no
 // entry for the avatarId, which means it is newer than the generated tables.
 export function mapAvatar(avatar, getProgress) {
-  const meta = ENKA_CHARS[String(avatar?.avatarId)];
+  // The Traveler is one avatarId shared by seven elements, distinguished only by
+  // skillDepotId. Both the character metadata and the talent ids differ per depot, so the
+  // bare avatarId resolves to just one of them (Anemo) and every other element needs the
+  // depot-qualified key looked up first.
+  const depotKey = avatar?.skillDepotId ? `${avatar.avatarId}-${avatar.skillDepotId}` : null;
+  const key = depotKey && ENKA_CHARS[depotKey] ? depotKey : String(avatar?.avatarId);
+  const meta = ENKA_CHARS[key];
   if (!meta) return null;
 
   const base = getProgress?.(meta.id) || blankProgress();
-  const order = SKILL_ORDER[String(avatar.avatarId)] || [];
+  const order = SKILL_ORDER[key] || [];
 
   const talents = {};
   TALENTS.forEach((t, i) => {
