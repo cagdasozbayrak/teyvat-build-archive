@@ -9,6 +9,7 @@ export default function Toolbar({
   hideDone,
   setHideDone,
   onAdd,
+  onImport,
 }) {
   return (
     <div className="toolbar">
@@ -44,6 +45,9 @@ export default function Toolbar({
         aria-pressed={hideDone}
       >
         {hideDone ? "◑" : "◔"} {hideDone ? "Completed hidden" : "Hide completed"}
+      </button>
+      <button className="chip" onClick={onImport}>
+        ⇣ Import from Enka
       </button>
       <button className="btn-primary" onClick={onAdd}>
         + Add character

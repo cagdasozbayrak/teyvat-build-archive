@@ -7,6 +7,7 @@ import Hero from "./components/Hero.jsx";
 import Toolbar from "./components/Toolbar.jsx";
 import CharacterGrid from "./components/CharacterGrid.jsx";
 import AddModal from "./components/AddModal.jsx";
+import ImportModal from "./components/ImportModal.jsx";
 import DetailModal from "./components/DetailModal.jsx";
 import ConfirmDialog from "./components/ConfirmDialog.jsx";
 
@@ -18,6 +19,7 @@ export default function App() {
   const [elemFilter, setElemFilter] = useState(null);
   const [hideDone, setHideDone] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [detailId, setDetailId] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
 
@@ -62,6 +64,7 @@ export default function App() {
         hideDone={hideDone}
         setHideDone={setHideDone}
         onAdd={() => setAddOpen(true)}
+        onImport={() => setImportOpen(true)}
       />
 
       {saveNote && <div className="save-note">{saveNote}</div>}
@@ -83,6 +86,15 @@ export default function App() {
           onAdd={t.addChar}
           onAddCustom={t.addCustom}
           onClose={() => setAddOpen(false)}
+        />
+      )}
+
+      {importOpen && (
+        <ImportModal
+          byId={byId}
+          owned={owned}
+          onImport={t.importFromEnka}
+          onClose={() => setImportOpen(false)}
         />
       )}
 
