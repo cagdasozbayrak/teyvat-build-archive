@@ -30,7 +30,8 @@ const WIKI_NAME = {
 };
 
 // jmp.blue uses different slugs for some characters. Keep these separate from build slugs
-// because Raiden and Traveler differ between the sources.
+// because Raiden and Traveler differ between the sources. jmp.blue carries only the Anemo
+// Traveler, so every element points at it. They share one face anyway.
 const SLUG_OVERRIDE = {
   Ayaka: "kamisato-ayaka",
   Ayato: "kamisato-ayato",
@@ -42,14 +43,27 @@ const SLUG_OVERRIDE = {
   Kokomi: "sangonomiya-kokomi",
   Childe: "tartaglia",
   Traveler: "traveler-anemo",
+  "Cryo Traveler": "traveler-anemo",
+  "Dendro Traveler": "traveler-anemo",
+  "Electro Traveler": "traveler-anemo",
+  "Geo Traveler": "traveler-anemo",
+  "Hydro Traveler": "traveler-anemo",
+  "Pyro Traveler": "traveler-anemo",
 };
+
+// The build source files every Traveler portrait under the slug "traveler" and separates
+// them by element directory. The roster slug carries the element instead, to match the
+// guide route, so map it back here or the URL 404s.
+const buildSlug = (c) => (/(^|\s)Traveler$/.test(c.name) ? "traveler" : c.slug);
 
 // Return portrait URLs in fallback order.
 export function portraitCandidates(c) {
   const out = [];
   // Custom characters have no build portrait because they have no slug.
   if (c.slug) {
-    out.push(`${BUILD_PORTRAIT}${c.element.toLowerCase()}/${c.rarity}/${c.slug}/portrait.webp`);
+    out.push(
+      `${BUILD_PORTRAIT}${c.element.toLowerCase()}/${c.rarity}/${buildSlug(c)}/portrait.webp`
+    );
   }
   const wiki = Object.prototype.hasOwnProperty.call(WIKI_NAME, c.name) ? WIKI_NAME[c.name] : c.name;
   // The wiki's "<name> Icon.png" is a square face avatar. The old
