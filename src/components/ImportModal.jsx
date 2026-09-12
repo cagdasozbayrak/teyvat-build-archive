@@ -12,13 +12,13 @@ function summary(progress) {
   return `Talents ${talents} · ${sets}/5 sets · CRIT ${s.critRate.cur}/${s.critDmg.cur} · ER ${s.er.cur}%`;
 }
 
-export default function ImportModal({ byId, owned, onImport, onClose }) {
+export default function ImportModal({ loading, byId, owned, onImport, onClose }) {
   const dismiss = useModalDismiss(onClose);
   const e = useEnkaImport({ byId, owned });
   const chosen = e.rows.filter((r) => e.picked[r.id]);
 
   const apply = () => {
-    onImport(
+    const applied = onImport(
       chosen.map((r) => ({
         id: r.id,
         entry: r.known
@@ -34,7 +34,9 @@ export default function ImportModal({ byId, owned, onImport, onClose }) {
         progress: r.progress,
       }))
     );
-    onClose();
+    // Leave the modal open if nothing was actually written, rather than closing
+    // as though the import had gone through.
+    if (applied) onClose();
   };
 
   return (
@@ -73,19 +75,30 @@ export default function ImportModal({ byId, owned, onImport, onClose }) {
                 e.setUid(ev.target.value);
                 if (e.status !== "idle") e.reset();
               }}
-              placeholder="Nine-digit UID"
-              inputMode="numeric"
-              aria-label="Genshin UID"
+              placeholder="Nine-digit UID or profile link"
+              aria-label="Genshin UID or profile link"
               autoFocus
             />
-            <button className="btn-primary" type="submit" disabled={e.status === "loading"}>
+            <button
+              className="btn-primary"
+              type="submit"
+              disabled={loading || e.status === "loading"}
+            >
               {e.status === "loading" ? "Reading…" : "Look up"}
             </button>
           </form>
 
           {e.status === "error" && <p className="warn">{e.error}</p>}
 
-          {e.status === "ready" && (
+          {e.status === "ready" && e.rows.length === 0 && (
+            <p className="enka-found">
+              {e.nickname ? `${e.nickname}, ` : ""}
+              every showcased character is newer than the roster data. Run npm run sync:data to pick
+              them up.
+            </p>
+          )}
+
+          {e.status === "ready" && e.rows.length > 0 && (
             <>
               <p className="enka-found">
                 {e.nickname ? `${e.nickname}, ` : ""}

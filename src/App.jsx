@@ -91,6 +91,7 @@ export default function App() {
 
       {importOpen && (
         <ImportModal
+          loading={loading}
           byId={byId}
           owned={owned}
           onImport={t.importFromEnka}

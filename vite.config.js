@@ -12,23 +12,30 @@ function enkaDevApi() {
         const { default: handler } = await server.ssrLoadModule("/api/enka.js");
         // middlewares.use strips the mount path, so req.url is "/?uid=...".
         const url = new URL(req.url, "http://localhost");
-        await handler(
-          { query: Object.fromEntries(url.searchParams) },
-          {
-            status(code) {
-              res.statusCode = code;
-              return this;
-            },
-            setHeader(key, value) {
-              res.setHeader(key, value);
-              return this;
-            },
-            json(body) {
-              res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify(body));
-            },
-          }
-        );
+        try {
+          await handler(
+            { query: Object.fromEntries(url.searchParams) },
+            {
+              status(code) {
+                res.statusCode = code;
+                return this;
+              },
+              setHeader(key, value) {
+                res.setHeader(key, value);
+                return this;
+              },
+              json(body) {
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify(body));
+              },
+            }
+          );
+        } catch {
+          // Fail loudly in dev instead of leaving the request hanging with nothing written.
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({ error: "The dev import proxy crashed." }));
+        }
       });
     },
   };

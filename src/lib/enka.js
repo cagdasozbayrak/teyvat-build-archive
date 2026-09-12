@@ -95,5 +95,5 @@ export function mapAvatar(avatar, getProgress) {
     }
   });
 
-  return { id: meta.id, meta, progress: { ...base, talents, artifacts, stats } };
+  return { id: meta.id, meta: { ...meta }, progress: { ...base, talents, artifacts, stats } };
 }
