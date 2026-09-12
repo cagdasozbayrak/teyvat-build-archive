@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { mapAvatar } from "../lib/enka.js";
 
 const UID = /^\d{9}$/;
@@ -24,12 +24,20 @@ export function useEnkaImport({ byId, owned }) {
   const [unknown, setUnknown] = useState(0);
   const [picked, setPicked] = useState({});
 
-  const fail = (message) => {
+  // Only the most recently started fetchProfile call is allowed to write to
+  // state. Without this, firing a second request before the first resolves
+  // lets whichever response lands last win, even if it's for a UID the user
+  // already moved on from.
+  const requestRef = useRef(0);
+
+  const fail = (reqId, message) => {
+    if (reqId !== requestRef.current) return;
     setStatus("error");
     setError(message);
   };
 
   const reset = useCallback(() => {
+    requestRef.current += 1;
     setStatus("idle");
     setError("");
     setRows([]);
@@ -38,9 +46,10 @@ export function useEnkaImport({ byId, owned }) {
   }, []);
 
   const fetchProfile = useCallback(async () => {
+    const reqId = ++requestRef.current;
     const clean = uid.trim();
     if (!UID.test(clean)) {
-      fail(HTTP_MESSAGES[400]);
+      fail(reqId, HTTP_MESSAGES[400]);
       return;
     }
     setStatus("loading");
@@ -52,20 +61,27 @@ export function useEnkaImport({ byId, owned }) {
     try {
       const res = await fetch(`/api/enka?uid=${clean}`);
       if (!res.ok) {
-        fail(HTTP_MESSAGES[res.status] || "The import service is unavailable. Try again shortly.");
+        fail(
+          reqId,
+          HTTP_MESSAGES[res.status] || "The import service is unavailable. Try again shortly."
+        );
         return;
       }
       data = await res.json();
     } catch {
-      fail("Could not reach the import service. Check your connection and try again.");
+      fail(reqId, "Could not reach the import service. Check your connection and try again.");
       return;
     }
 
     const list = data.avatarInfoList || [];
     if (list.length === 0) {
-      fail(SHOWCASE_OFF);
+      fail(reqId, SHOWCASE_OFF);
       return;
     }
+
+    // A newer fetchProfile call (or a reset) may have landed while this one
+    // was in flight; drop the result instead of overwriting the current one.
+    if (reqId !== requestRef.current) return;
 
     // mapAvatar returns null for a character the generated tables predate.
     const mapped = list.map((a) => mapAvatar(a, (id) => owned[id] || null));
