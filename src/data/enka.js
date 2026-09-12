@@ -117,6 +117,18 @@ export const ENKA_CHARS = {
   10000124: { id: "Jahoda", element: "Anemo", weapon: "Bow", rarity: 4 },
   10000903: { id: "Ineffa", element: "Electro", weapon: "Polearm", rarity: 5 },
   10000904: { id: "Columbina", element: "Hydro", weapon: "Catalyst", rarity: 5 },
+  "10000005-502": { id: "Traveler (Pyro)", element: "Pyro", weapon: "Sword", rarity: 5 },
+  "10000005-503": { id: "Traveler (Hydro)", element: "Hydro", weapon: "Sword", rarity: 5 },
+  "10000005-504": { id: "Traveler", element: "Anemo", weapon: "Sword", rarity: 5 },
+  "10000005-506": { id: "Traveler (Geo)", element: "Geo", weapon: "Sword", rarity: 5 },
+  "10000005-507": { id: "Traveler (Electro)", element: "Electro", weapon: "Sword", rarity: 5 },
+  "10000005-508": { id: "Traveler (Dendro)", element: "Dendro", weapon: "Sword", rarity: 5 },
+  "10000007-702": { id: "Traveler (Pyro)", element: "Pyro", weapon: "Sword", rarity: 5 },
+  "10000007-703": { id: "Traveler (Hydro)", element: "Hydro", weapon: "Sword", rarity: 5 },
+  "10000007-704": { id: "Traveler", element: "Anemo", weapon: "Sword", rarity: 5 },
+  "10000007-706": { id: "Traveler (Geo)", element: "Geo", weapon: "Sword", rarity: 5 },
+  "10000007-707": { id: "Traveler (Electro)", element: "Electro", weapon: "Sword", rarity: 5 },
+  "10000007-708": { id: "Traveler (Dendro)", element: "Dendro", weapon: "Sword", rarity: 5 },
 };
 
 export const SKILL_ORDER = {
@@ -231,6 +243,18 @@ export const SKILL_ORDER = {
   10000124: [11241, 11242, 11245],
   10000903: [11161, 11162, 11165],
   10000904: [10231, 10232, 10235],
+  "10000005-502": [100541, 10097, 10098],
+  "10000005-503": [100542, 10087, 10088],
+  "10000005-504": [100543, 10067, 10068],
+  "10000005-506": [100545, 10077, 10078],
+  "10000005-507": [100546, 10602, 10605],
+  "10000005-508": [100547, 10117, 10118],
+  "10000007-702": [100551, 10097, 10098],
+  "10000007-703": [100552, 10087, 10088],
+  "10000007-704": [100553, 10067, 10068],
+  "10000007-706": [100555, 10077, 10078],
+  "10000007-707": [100556, 10602, 10605],
+  "10000007-708": [100557, 10117, 10118],
 };
 
 export const SET_NAMES = {
