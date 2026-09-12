@@ -78,7 +78,7 @@ export function mapAvatar(avatar, getProgress) {
   });
   (avatar.equipList || []).forEach((e) => {
     const slot = SLOTS[e?.flat?.equipType];
-    const set = SET_NAMES[e?.flat?.setNameTextMapHash];
+    const set = SET_NAMES[String(e?.flat?.setId)];
     // An unresolved set means the generated table lags ARTIFACT_SETS. Keep what is there
     // rather than overwriting a typed name with a placeholder.
     if (slot && set) artifacts[slot] = { ...artifacts[slot], set };
