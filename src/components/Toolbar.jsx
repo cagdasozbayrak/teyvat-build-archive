@@ -46,7 +46,7 @@ export default function Toolbar({
       >
         {hideDone ? "◑" : "◔"} {hideDone ? "Completed hidden" : "Hide completed"}
       </button>
-      <button className="chip" onClick={onImport}>
+      <button className="btn-secondary" onClick={onImport}>
         ⇣ Import from Enka
       </button>
       <button className="btn-primary" onClick={onAdd}>
