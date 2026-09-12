@@ -5,8 +5,8 @@
 // - store/gi/locs.json: text map hash -> localized string, 15 languages
 // - store/gi/relics.json: artifact set id -> name hash, plus item metadata
 //
-// Run after sync-data.mjs. The artifact set filter reads ARTIFACT_SETS and the character
-// match reads ROSTER, both of which that script refreshes. `npm run sync:data` chains them.
+// Run `npm run sync:enka` after `npm run sync:data`: the artifact set filter reads
+// ARTIFACT_SETS and the character match reads ROSTER, both of which that script refreshes.
 import { writeFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
