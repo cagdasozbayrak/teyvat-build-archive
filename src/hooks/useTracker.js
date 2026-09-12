@@ -97,6 +97,19 @@ export function useTracker() {
     update({ ...owned, [entry.id]: blankProgress() }, [...custom, entry]);
   };
 
+  // Apply a whole Enka import in one write. Splitting it per character would persist once
+  // per row and leave a half-imported save if one of them threw.
+  const importFromEnka = (patches) => {
+    if (loading || !patches.length) return;
+    const nextOwned = { ...owned };
+    const added = [];
+    patches.forEach(({ id, entry, progress }) => {
+      nextOwned[id] = progress;
+      if (entry && !custom.some((c) => c.id === id)) added.push(entry);
+    });
+    update(nextOwned, added.length ? [...custom, ...added] : null);
+  };
+
   const setTalent = (id, key, patch) => {
     const p = owned[id];
     const next = { ...p.talents[key], ...patch };
@@ -177,6 +190,7 @@ export function useTracker() {
     addChar,
     removeChar,
     addCustom,
+    importFromEnka,
     setTalent,
     toggleArtifact,
     toggleReshape,
