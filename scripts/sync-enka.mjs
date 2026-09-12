@@ -45,10 +45,10 @@ const NAME_OVERRIDE = { "Raiden Shogun": "Raiden" };
 const TRAVELER_IDS = ["10000005", "10000007"];
 
 // The Anemo depots keep the roster's single "Traveler" row, so an existing save is not
-// orphaned. Every other element gets its own row because the roster has no way to track
-// two elements under one id at once.
+// orphaned. Every other element resolves to its own roster row (e.g. "Cryo Traveler"),
+// since the roster has no way to track two elements under one save id at once.
 function travelerId(element) {
-  return element === "Anemo" ? "Traveler" : `Traveler (${element})`;
+  return element === "Anemo" ? "Traveler" : `${element} Traveler`;
 }
 
 async function getJSON(name) {
@@ -91,7 +91,16 @@ function buildChars(store, loc, byName, bySlug) {
       // reports it.
       if (meta.Element === "None") continue;
       const element = ELEMENTS[meta.Element] ?? "Anemo";
-      chars[avatarId] = { id: travelerId(element), element, weapon: "Sword", rarity: 5 };
+      const id = travelerId(element);
+      // The roster now carries a row per playable Traveler element, so resolve its
+      // element, weapon and rarity the same way a matched character does.
+      const roster = byName.get(id.toLowerCase());
+      chars[avatarId] = {
+        id,
+        element: roster ? roster.element : element,
+        weapon: roster ? roster.weapon : "Sword",
+        rarity: roster ? roster.rarity : 5,
+      };
       if (Array.isArray(meta.SkillOrder) && meta.SkillOrder.length === 3) {
         order[avatarId] = meta.SkillOrder;
       }

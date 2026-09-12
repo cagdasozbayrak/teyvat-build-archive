@@ -21,6 +21,12 @@ const WIKI_NAME = {
   Kokomi: "Sangonomiya Kokomi",
   Childe: "Tartaglia",
   Traveler: null, // The wiki has no single Traveler avatar.
+  "Cryo Traveler": null,
+  "Dendro Traveler": null,
+  "Electro Traveler": null,
+  "Geo Traveler": null,
+  "Hydro Traveler": null,
+  "Pyro Traveler": null,
 };
 
 // jmp.blue uses different slugs for some characters. Keep these separate from build slugs
