@@ -72,6 +72,8 @@ const RAW = [
   ["Varesa", "Electro", "Catalyst", 5, "Natlan"],
   ["Varka", "Anemo", "Claymore", 5, "Mondstadt"],
   ["Venti", "Anemo", "Bow", 5, "Mondstadt"],
+  ["Vesna", "Anemo", "Sword", 5, "—"],
+  ["Vodyanitsa", "Hydro", "Catalyst", 5, "—"],
   ["Wanderer", "Anemo", "Catalyst", 5, "Sumeru"],
   ["Wriothesley", "Cryo", "Catalyst", 5, "Fontaine"],
   ["Xianyun", "Anemo", "Catalyst", 5, "Liyue"],
